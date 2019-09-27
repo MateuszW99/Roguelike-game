@@ -1,6 +1,7 @@
 ﻿using Game.Interfaces;
 using RLNET;
 using RogueSharp;
+using System;
 
 namespace Game.Core
 {
@@ -175,6 +176,16 @@ namespace Game.Core
             }
         }
 
+        protected void AddHealthBar(RLConsole console, int xPosition, int yPosition)
+        {
+            // Calculate the width of health bard
+            int width = Convert.ToInt32(((double)this.Health / (double)this.MaxHealth) * 16.0);
+            int remainingWidth = 16 - width;
+
+            // Set the background colors of the health bar to show damage
+            console.SetBackColor(xPosition, yPosition, width, 1, Palette.Primary);
+            console.SetBackColor(xPosition + width, yPosition, remainingWidth, 1, Palette.PrimaryDarkest);
+        }
 
     }
 }
