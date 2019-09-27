@@ -1,9 +1,14 @@
-﻿using RogueSharp;
+﻿using Game.Core.Items;
+using RogueSharp;
+using System.Collections.Generic;
 
 namespace Game.Core
 {
     public class Player : Actor
     {
+        public List<ItemActive> Actives;
+        public List<ItemPassive> Passives;
+
         public Player()
         {
             StarterStats();
@@ -35,6 +40,9 @@ namespace Game.Core
             Name = "Rogue";
             Speed = 10;
             Symbol = '@';
+
+            Actives = new List<ItemActive>();
+            Passives = new List<ItemPassive>();
         }
 
         public void DrawStats(RLNET.RLConsole console, int xPosition, int yPosition)
