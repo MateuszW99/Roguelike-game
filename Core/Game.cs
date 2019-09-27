@@ -188,7 +188,7 @@ namespace Game
         {
             DungeonMap.Draw(_mapConsole, _statConsole);
             Player.Draw(_mapConsole, DungeonMap);
-            Player.DrawStats(_statConsole);
+            Player.DrawStats(_statConsole, 1, 1);
             MessageLog.Draw(_messageConsole);
         }
     }
