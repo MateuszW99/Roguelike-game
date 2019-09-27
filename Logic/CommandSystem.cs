@@ -1,4 +1,5 @@
 ﻿using Game.Core;
+using Game.Core.Items;
 using Game.Interfaces;
 using Game.Logic.MapGeneration;
 using RLNET;
@@ -88,6 +89,7 @@ namespace Game.Logic
             if(Game.DungeonMap.SetActorPostion(Game.Player, x, y))
             {
                 GoldPile.SearchForGold();
+                Item.SearchForItems();
                 return true;
             }
 
@@ -187,7 +189,7 @@ namespace Game.Logic
         {
             if(damage > 0)
             {
-                defender.Health = defender.Health - damage;
+                defender.Health -= damage;
 
                 Game.MessageLog.Add($"  {defender.Name} was hit for {damage} damage.");
                 if(defender.Health <= 0)
@@ -210,7 +212,7 @@ namespace Game.Logic
             else if(actor is Monster)
             {
                 Game.DungeonMap.RemoveMonster((Monster)actor);
-                GoldPile.DropGold((Monster)actor);
+                RandomDrop.Next((Monster)actor);
             }
         }
 
