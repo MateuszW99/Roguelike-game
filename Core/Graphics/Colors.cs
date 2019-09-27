@@ -25,6 +25,7 @@ namespace Game.Core
         public static RLColor DoorFov = Palette.ComplimentLightest;
 
         public static RLColor Gold = Palette.DbGold;
+        public static RLColor Sword = Palette.DbMetal;
 
         public static RLColor Text = RLColor.White;
     }
