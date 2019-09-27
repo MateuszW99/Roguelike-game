@@ -46,7 +46,6 @@ namespace Game.Core.Items
                 Color = Colors.Floor;
                 ColorBackground = Colors.FloorBackground;
             }
-            Game.MessageLog.Add("xd");
             console.Set(X, Y, Color, ColorBackground, Symbol);
         }
 
