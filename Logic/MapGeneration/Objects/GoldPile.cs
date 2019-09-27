@@ -15,13 +15,6 @@ namespace Game.Core
         public int X { get; set; }
         public int Y { get; set; }
 
-        public GoldPile(Cell cell, int goldAmount)
-        {
-            Location = cell;
-            Gold = goldAmount;
-            Color = Colors.Gold;
-        }
-
         public GoldPile(int x, int y, int goldAmount)
         {
             X = x;
