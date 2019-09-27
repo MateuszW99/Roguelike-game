@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Core;
 using Game.Logic.MapGeneration.Objects;
+using Game.Core.Items;
 
 namespace Game.Logic.MapGeneration
 {
@@ -17,6 +18,7 @@ namespace Game.Logic.MapGeneration
         public List<Monster> Monsters;
         public static List<GoldPile> GoldPiles;
         public List<Column> Columns;
+        public static List<Item> Items;
         public List<Door> Doors { get; set; }
         public Stairs StairsUp { get; set; }
         public Stairs StairsDown { get; set; }
@@ -32,6 +34,7 @@ namespace Game.Logic.MapGeneration
             GoldPiles = new List<GoldPile>();
             Columns = new List<Column>();
             Doors = new List<Door>();
+            Items = new List<Item>();
         }
 
         // The draw method is called every time the map is updated
@@ -71,6 +74,11 @@ namespace Game.Logic.MapGeneration
             foreach(GoldPile gold in GoldPiles)
             {
                 gold.Draw(mapConsole, this);
+            }
+
+            foreach(Item item in Items)
+            {
+                item.Draw(mapConsole, this);
             }
         }
 
@@ -217,21 +225,6 @@ namespace Game.Logic.MapGeneration
             return false;
         }
 
-
-
-
-
-        private bool IsObstacle(int x, int y)
-        {
-            foreach(Column cell in Columns)
-            {
-                if(cell.X == x && cell.Y == y)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
 
         // Return the door at (x, y) or null if there is none
         public Door GetDoor(int x, int y)
