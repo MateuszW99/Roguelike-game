@@ -7,22 +7,15 @@ namespace Game.Core.Items
     {
         public Sword(int x, int y) : base(x, y)
         {
-            Symbol = 'X';
+            Symbol = 'S';
             Name = "Sword";
             Stats = 1;
         }
 
-        public override void Use(Player player, int? itemNumber)
-        {
-            player.Attack += Stats;
-        }
-
-        public override void DropItem(Monster monster)
-        {
-            //Cell monsterLocation = new Cell(monster.X, monster.Y, true, true, true);
-            DungeonMap.Items.Add(this);
-            Game.MessageLog.Add($"  {monster.Name} died and dropped an item.");
-        }
+        //public override void Use(Player player, int? itemNumber)
+        //{
+            
+       //}
 
     }
 }

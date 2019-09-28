@@ -1,4 +1,5 @@
 ﻿using Game.Interfaces;
+using Game.Logic.MapGeneration;
 using System.Linq;
 
 namespace Game.Core.Items
@@ -35,12 +36,20 @@ namespace Game.Core.Items
 
         public override void Use(Player player, int? itemNumber)
         {
-
+            if(this is Sword)
+            {
+                player.Attack += Stats;
+            }
+            else if(this is Armor)
+            {
+                player.Defense += Stats;
+            }
         }
 
-        //protected override void DropItem(Monster monster)
-        //{
-
-        //}
+        public override void DropItem(Monster monster)
+        {
+            DungeonMap.Items.Add(this);
+            Game.MessageLog.Add($"  {monster.Name} died and dropped {this.Name}.");
+        }
     }
 }
