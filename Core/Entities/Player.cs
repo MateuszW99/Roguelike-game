@@ -6,8 +6,8 @@ namespace Game.Core
 {
     public class Player : Actor
     {
-        public List<ItemActive> Actives;
-        public List<ItemPassive> Passives;
+        public static PlayerInventory Inventory;
+
 
         public Player()
         {
@@ -41,8 +41,8 @@ namespace Game.Core
             Speed = 10;
             Symbol = '@';
 
-            Actives = new List<ItemActive>();
-            Passives = new List<ItemPassive>();
+            Inventory = new PlayerInventory();
+
         }
 
         public void DrawStats(RLNET.RLConsole console, int xPosition, int yPosition)
