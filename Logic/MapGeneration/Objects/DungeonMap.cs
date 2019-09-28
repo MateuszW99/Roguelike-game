@@ -14,7 +14,7 @@ namespace Game.Logic.MapGeneration
         private readonly char wall = '#';
         //private readonly char column = 'o';
 
-        public List<Rectangle> Rooms { get; set; }
+        public static List<Rectangle> Rooms { get; set; }
         public List<Monster> Monsters;
         public static List<GoldPile> GoldPiles;
         public List<Column> Columns;
@@ -38,7 +38,7 @@ namespace Game.Logic.MapGeneration
         }
 
         // The draw method is called every time the map is updated
-        // it will render all of the symbols/colors for each cell to the map sub console
+        // it will render all of the symbols/colors for each cell to the map console
         public void Draw(RLConsole mapConsole, RLConsole statConsole)
         {
             foreach (Cell cell in GetAllCells())
@@ -265,6 +265,8 @@ namespace Game.Logic.MapGeneration
         {
             Cell cell = (Cell)GetCell(x, y);
             SetCellProperties(cell.X, cell.Y, cell.IsTransparent, cell.IsWalkable, IsExplored);
+        }
+
         }
     }
 }

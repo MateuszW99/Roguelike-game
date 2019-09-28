@@ -207,7 +207,7 @@ namespace Game.Logic
         {
             if(actor is Player)
             {
-                Game.MessageLog.Add("You just died. Game over!");      
+                Game.MessageLog.Add("You just died. Game over!");
             }
             else if(actor is Monster)
             {
