@@ -24,11 +24,11 @@ namespace Game.Core.Items
 
         public void Add(Player player)
         {
-            if(!player.Actives.Contains(this))
+            if (!Player.Inventory.Actives.Contains(this))
             {
-                player.Actives.Add(this);
+                Player.Inventory.Actives.Add(this);
             }
-            player.Actives.Last().Quantity++;
+            Player.Inventory.Actives.Last().Quantity++;
             Game.MessageLog.Add($"You found the {this.Name}!");
         }
 
@@ -44,8 +44,10 @@ namespace Game.Core.Items
                 return;
             }
             //player.Equipment[itemNumber].
-            player.Actives[itemNumber.GetValueOrDefault()].Quantity--;
-
+            Player.Inventory.Actives[itemNumber.GetValueOrDefault()].Quantity--;
         }
+
+        public virtual void GiveEffect()
+        { }
     }
 }

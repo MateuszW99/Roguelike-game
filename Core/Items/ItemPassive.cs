@@ -23,9 +23,9 @@ namespace Game.Core.Items
 
         public override void Add(Player player)
         {
-            if (!player.Passives.Contains(this))
+            if (!Player.Inventory.Passives.Contains(this))
             {
-                player.Passives.Add(this);
+                Player.Inventory.Passives.Add(this);
                 Game.MessageLog.Add($"You found the {this.Name}!");
             }
             else

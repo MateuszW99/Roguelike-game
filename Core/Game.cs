@@ -4,6 +4,7 @@ using Game.Core;
 using Game.Logic;
 using RogueSharp.Random;
 using Game.Logic.MapGeneration;
+using Game.Core.Items;
 
 namespace Game
 {
@@ -18,6 +19,8 @@ namespace Game
         public static CommandSystem CommandSystem { get; private set; }
 
         public static MessageLog MessageLog { get; private set; }
+
+        public static PlayerInventory  PlayerInventory { get; set; }
 
         public static ActionScheduling SchedulingSystem { get; private set; }
 
@@ -67,9 +70,9 @@ namespace Game
             _inventoryConsole = new RLConsole(_inventoryWidth, _inventoryHeight);
 
             SchedulingSystem = new ActionScheduling();
+
             MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 20, 13, 7, mapLevel);
             DungeonMap = mapGenerator.CreateMap(_mapConsole);
-            //Player = new Player(DungeonMap.Rooms[0].Center);//
             DungeonMap.UpdatePlayerFieldOfView();
 
             CommandSystem = new CommandSystem();
@@ -78,6 +81,9 @@ namespace Game
             MessageLog = new MessageLog();
             MessageLog.Add("The rogue arrives on level 1");
             MessageLog.Add($"Level created with seed '{seed}'");
+
+            // PlayerInventory keeps player's equipment and prints its content onto the _inventoryConsole
+            PlayerInventory = new PlayerInventory();
 
             PlaceConsoles();
 
@@ -95,8 +101,8 @@ namespace Game
             _mapConsole.SetBackColor(0, 0, _mapWidth, _mapHeight, Colors.FloorBackground);
             _mapConsole.Print(1, 1, "", Colors.TextHeading);
 
-            _inventoryConsole.SetBackColor(0, 0, _inventoryWidth, _inventoryHeight, Palette.DbWood);
-            _inventoryConsole.Print(1, 1, "Inventory", Colors.TextHeading);
+            //_inventoryConsole.SetBackColor(0, 0, _inventoryWidth, _inventoryHeight, Palette.DbWood);
+            //_inventoryConsole.Print(1, 1, "Inventory", Colors.TextHeading);
         }
 
         private static void OnRootConsoleUpdate(object sender, UpdateEventArgs e)
@@ -182,6 +188,7 @@ namespace Game
             _mapConsole.Clear();
             _statConsole.Clear();
             _messageConsole.Clear();
+            _inventoryConsole.Clear();
         }
 
         private static void DrawConsoles()
@@ -190,6 +197,7 @@ namespace Game
             Player.Draw(_mapConsole, DungeonMap);
             Player.DrawStats(_statConsole, 1, 1);
             MessageLog.Draw(_messageConsole);
+            PlayerInventory.Draw(_inventoryConsole);
         }
     }
 }

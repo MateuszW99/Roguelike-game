@@ -11,11 +11,5 @@ namespace Game.Core.Items
             Name = "Sword";
             Stats = 1;
         }
-
-        //public override void Use(Player player, int? itemNumber)
-        //{
-            
-       //}
-
     }
 }
