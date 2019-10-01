@@ -25,10 +25,20 @@ namespace Game.Logic
                         sword.DropItem(monster);
                         return;
                     }
-                case 5:
+                case 5: 
                     {
                         Armor armor = new Armor(monster.X, monster.Y);
                         armor.DropItem(monster);
+                        return;
+                    }
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                case 10:
+                    {
+                        ScrollOfTeleport scroll = new ScrollOfTeleport(monster.X, monster.Y);
+                        scroll.DropItem(monster);
                         return;
                     }
                 default:
