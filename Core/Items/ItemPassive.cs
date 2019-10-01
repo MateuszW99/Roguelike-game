@@ -46,10 +46,9 @@ namespace Game.Core.Items
             }
         }
 
-        public override void DropItem(Monster monster)
-        {
-            DungeonMap.Items.Add(this);
-            Game.MessageLog.Add($"  {monster.Name} died and dropped {this.Name}.");
-        }
+        //public override void DropItem(Monster monster)
+       // {
+
+        //}
     }
 }

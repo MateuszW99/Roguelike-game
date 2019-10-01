@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Game.Core.Items
 {
-    public class ItemActive : Item
+    public class ItemActive : Item, IEquatable<ItemActive>
     {
         private int quantity;
         public int Quantity
@@ -20,34 +20,50 @@ namespace Game.Core.Items
         }
 
         protected ItemActive(int x, int y) : base(x, y)
-        { }
-
-        public void Add(Player player)
         {
-            if (!Player.Inventory.Actives.Contains(this))
-            {
-                Player.Inventory.Actives.Add(this);
-            }
-            Player.Inventory.Actives.Last().Quantity++;
-            Game.MessageLog.Add($"You found the {this.Name}!");
         }
 
-        public void Use(Player player, int? itemNumber)
+
+        public void Use(int? itemNumber)
         {
             if(itemNumber == null)
             {
                 return;
             }
-            if(this.Quantity <= 0)
+            if(Quantity <= 0)
             {
-                Game.MessageLog.Add($"You don't have any {this.Name} to use.");
+                Game.MessageLog.Add($"You don't have any {Name} to use.");
                 return;
             }
-            //player.Equipment[itemNumber].
             Player.Inventory.Actives[itemNumber.GetValueOrDefault()].Quantity--;
         }
 
         public virtual void GiveEffect()
         { }
+
+        // IEquatable
+        public override string ToString()
+        {
+            return Name.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+            ItemActive tempItem = obj as ItemActive;
+            if (tempItem == null) return false;
+            else return Equals(tempItem);
+        }
+
+        public override int GetHashCode()
+        {
+            return 0;
+        }
+
+        public bool Equals(ItemActive tempItem)
+        {
+            if (tempItem == null) return false;
+            return this.Name.Equals(tempItem.Name);
+        }
     }
 }

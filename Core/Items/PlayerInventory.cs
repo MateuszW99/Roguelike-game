@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using RLNET;
 
@@ -17,15 +18,28 @@ namespace Game.Core.Items
 
         public void Draw(RLConsole console)
         {
-            for(int i = 0; i < Actives.Count; i++)
+            for(int i = 0; i < Player.Inventory.Actives.Count; i++)
             {
                 StringBuilder itemDescription = new StringBuilder();
-                itemDescription.Append(Actives[i].Name);
+                itemDescription.Append(Player.Inventory.Actives[i].Name);
                 itemDescription.Append(" x ");
-                itemDescription.Append(Actives[i].Quantity);
-                console.Print(1, i + 1, itemDescription.ToString(), RLColor.White);               
+                itemDescription.Append(Player.Inventory.Actives[i].Quantity);
+                console.Print(1, i + 1, itemDescription.ToString(), RLColor.Cyan);               
             }
         }
 
+        public static void AddToQuickBar(ItemActive item)
+        {
+            if (!Player.Inventory.Actives.Contains(item))
+            {
+                Player.Inventory.Actives.Add(item);
+            }
+            
+            ItemActive tempItem = Player.Inventory.Actives.Find(x => x.Name == item.Name);
+            if(tempItem != null)
+            {
+                tempItem.Quantity++;
+            }
+        }
     }
 }

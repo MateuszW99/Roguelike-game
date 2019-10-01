@@ -50,16 +50,25 @@ namespace Game.Core.Items
         }
 
         public virtual void DropItem(Monster monster)
-        { }
+        {
+            DungeonMap.Items.Add(this);
+            Game.MessageLog.Add($"  {monster.Name} died and dropped {this.Name}.");
+        }
 
         public static void SearchForItems()
         {
             for(int i = DungeonMap.Items.Count - 1; i >= 0; i--)
             {
-                if(DungeonMap.Items[i].X == Game.Player.X && DungeonMap.Items[i].Y == Game.Player.Y)
+                if (DungeonMap.Items[i].X == Game.Player.X && DungeonMap.Items[i].Y == Game.Player.Y)
                 {
-                    Game.MessageLog.Add("x");
-                    DungeonMap.Items[i].Use(Game.Player, null);
+                    if (DungeonMap.Items[i] is ItemPassive)
+                    {
+                        DungeonMap.Items[i].Use(Game.Player, null);
+                    }
+                    else if(DungeonMap.Items[i] is ItemActive)
+                    {
+                        PlayerInventory.AddToQuickBar((ItemActive)DungeonMap.Items[i]);
+                    }
                     Game.MessageLog.Add($"You picked the {DungeonMap.Items[i].Name}.");
                     DungeonMap.Items.RemoveAt(i);
                 }
