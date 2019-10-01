@@ -49,26 +49,26 @@ namespace Game.Logic.MapGeneration
                 var newRoom = new Rectangle(roomXPosition, roomYPosition, roomWidth, roomHeight);
 
                 // Check to see if the room rectangle intersects with any other rooms
-                bool newRoomIntersects = _map.Rooms.Any(room => newRoom.Intersects(room));
+                bool newRoomIntersects = DungeonMap.Rooms.Any(room => newRoom.Intersects(room));
                 if (!newRoomIntersects)
                 {
-                    _map.Rooms.Add(newRoom);
+                    DungeonMap.Rooms.Add(newRoom);
                 }
             }
 
-            foreach (Rectangle room in _map.Rooms)
+            foreach (Rectangle room in DungeonMap.Rooms)
             {
                 CreateRoom(room);
             }
 
             // Create corridors connecting the rooms
-            for (int i = 1; i < _map.Rooms.Count; i++)
+            for (int i = 1; i < DungeonMap.Rooms.Count; i++)
             {
                 // For all remaining previous rooms get the center of the room and the previous room
-                int previousRoomCenterX = _map.Rooms[i - 1].Center.X;
-                int previousRoomCenterY = _map.Rooms[i - 1].Center.Y;
-                int currentRoomCenterX = _map.Rooms[i].Center.X;
-                int currentRoomCenterY = _map.Rooms[i].Center.Y;
+                int previousRoomCenterX = DungeonMap.Rooms[i - 1].Center.X;
+                int previousRoomCenterY = DungeonMap.Rooms[i - 1].Center.Y;
+                int currentRoomCenterX = DungeonMap.Rooms[i].Center.X;
+                int currentRoomCenterY = DungeonMap.Rooms[i].Center.Y;
                 // Random chance to draw a 'L' or 'Г' shaped corridor 
                 if (Game.Random.Next(1, 2) == 1)
                 {
@@ -82,14 +82,14 @@ namespace Game.Logic.MapGeneration
                 }
             }
 
-            foreach (Rectangle room in _map.Rooms)
+            foreach (Rectangle room in DungeonMap.Rooms)
             {
                 CreateDoors(room);
             }
 
             CreateStairs();
 
-            foreach(Rectangle room in _map.Rooms)
+            foreach(Rectangle room in DungeonMap.Rooms)
             {
                 if(Game.Random.Next(1, 2) == 1)
                 {
@@ -120,7 +120,7 @@ namespace Game.Logic.MapGeneration
             Player player = Game.Player;
             if (player == null)
             {
-                player = new Player(_map.Rooms[0].Center);
+                player = new Player(DungeonMap.Rooms[0].Center);
             }
             _map.AddPlayer(player);
         }
@@ -128,7 +128,7 @@ namespace Game.Logic.MapGeneration
         private void PlaceMonsters()
         {
             // Don't spawn monster in the starting room
-            for (int i = 1; i < _map.Rooms.Count; i++)
+            for (int i = 1; i < DungeonMap.Rooms.Count; i++)
             {
                 // Each room has 60% chance to containg monsters
                 if (Dice.Roll("1D10") < 7)
@@ -138,8 +138,8 @@ namespace Game.Logic.MapGeneration
                     for (int j = 0; j < numberOfMonsters; j++)
                     {
                         // Find space to place a monster
-                        Point randomLocation = (Point)_map.GetRandomWalkableLocation(_map.Rooms[i]);
-                        if(randomLocation == _map.Rooms[i].Center)
+                        Point randomLocation = (Point)_map.GetRandomWalkableLocation(DungeonMap.Rooms[i]);
+                        if(randomLocation == DungeonMap.Rooms[i].Center)
                         {
                             return;
                         }
@@ -184,7 +184,7 @@ namespace Game.Logic.MapGeneration
                 if (_map.IsWalkable(xPosition, yPosition) && !(room.Center.X == xPosition && room.Center.Y == yPosition))
                 {
                     _map.SetCellProperties(xPosition, yPosition, false, false, false);
-                    _map.Columns.Add(new Column(xPosition, yPosition));
+                    DungeonMap.Columns.Add(new Column(xPosition, yPosition));
                     _map.SetIsWalkable(xPosition, yPosition, false);
                 }
                 else
@@ -288,14 +288,14 @@ namespace Game.Logic.MapGeneration
         {
             _map.StairsUp = new Stairs
             {
-                X = _map.Rooms.First().Center.X + 1,
-                Y = _map.Rooms.First().Center.Y + 1,
+                X = DungeonMap.Rooms.First().Center.X + 1,
+                Y = DungeonMap.Rooms.First().Center.Y + 1,
                 IsUp = true
             };
             _map.StairsDown = new Stairs
             {
-                X = _map.Rooms.Last().Center.X,
-                Y = _map.Rooms.Last().Center.Y,
+                X = DungeonMap.Rooms.Last().Center.X,
+                Y = DungeonMap.Rooms.Last().Center.Y,
                 IsUp = false
             };
         }

@@ -17,7 +17,7 @@ namespace Game.Logic.MapGeneration
         public static List<Rectangle> Rooms { get; set; }
         public List<Monster> Monsters;
         public static List<GoldPile> GoldPiles;
-        public List<Column> Columns;
+        public static List<Column> Columns;
         public static List<Item> Items;
         public List<Door> Doors { get; set; }
         public Stairs StairsUp { get; set; }
@@ -194,7 +194,7 @@ namespace Game.Logic.MapGeneration
 
         public Point? GetRandomWalkableLocation(Rectangle room)
         {
-            if (DoesRoomHasWalkableSpace(room))
+            if(DoesRoomHasWalkableSpace(room))
             {
                 for (int i = 0; i < 100; i++)
                 {
@@ -251,9 +251,9 @@ namespace Game.Logic.MapGeneration
             return StairsDown.X == player.X && StairsDown.Y == player.Y;
         }
 
-        private bool IsColumn(int x, int y)
+        private static bool IsColumn(int x, int y)
         {
-            foreach (Column column in Columns)
+            foreach (Column column in DungeonMap.Columns)
             {
                 if(column.X == x && column.Y == y)
                 return true;
@@ -267,7 +267,19 @@ namespace Game.Logic.MapGeneration
             SetCellProperties(cell.X, cell.Y, cell.IsTransparent, cell.IsWalkable, IsExplored);
         }
 
+        public static bool CanTeleport(int x, int y)
+        {
+            if(DungeonMap.IsColumn(x, y))
+            {
+                return false;
+            }
+            // TODO: check for stairs
+            return true;
         }
+
+
+
     }
 }
+
 
