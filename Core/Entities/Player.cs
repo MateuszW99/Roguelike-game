@@ -42,10 +42,9 @@ namespace Game.Core
             Symbol = '@';
 
             Inventory = new PlayerInventory();
-
         }
 
-        public void DrawStats(RLNET.RLConsole console, int xPosition, int yPosition)
+        public void DrawStats(RLNET.RLConsole console, int yPosition)
         {
             console.Print(1, yPosition, $"Name:     {Name}", Colors.Text);
             console.Print(1, ++yPosition, $"Health:     {Health}", Colors.Text);
