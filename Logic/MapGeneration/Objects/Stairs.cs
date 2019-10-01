@@ -36,6 +36,13 @@ namespace Game.Logic.MapGeneration
             console.Set(X, Y, Color, null, Symbol);
         }
 
-
+        public bool IsStairs(int x, int y)
+        {
+            if(x == this.X && y == this.Y)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }
