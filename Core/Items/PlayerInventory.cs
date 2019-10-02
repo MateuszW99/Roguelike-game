@@ -24,7 +24,7 @@ namespace Game.Core.Items
                 itemDescription.Append(Player.Inventory.Actives[i].Name);
                 itemDescription.Append(" x ");
                 itemDescription.Append(Player.Inventory.Actives[i].Quantity);
-                console.Print(1, i + 1, itemDescription.ToString(), RLColor.Cyan);               
+                console.Print(1, i + 1, itemDescription.ToString(), RLColor.Cyan);
             }
         }
 

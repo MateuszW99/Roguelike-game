@@ -150,6 +150,8 @@ namespace Game.Logic.MapGeneration
                 if(actor is Player)
                 {
                     UpdatePlayerFieldOfView();
+                    Item.SearchForItems();
+                    GoldPile.SearchForGold();
                 }
                 return true;
             }
