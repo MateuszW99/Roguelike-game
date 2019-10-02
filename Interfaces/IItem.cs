@@ -7,8 +7,8 @@ namespace Game.Interfaces
         string Name { get; set; }
         char Symbol { get; set; }
 
-        void Add(Player player);
-        void Use(Player player, int? itemNumber);
+        void Add();
+        void Use();
         
     }
 }

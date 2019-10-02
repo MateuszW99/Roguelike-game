@@ -21,7 +21,7 @@ namespace Game.Core.Items
 
         }
 
-        public override void Add(Player player)
+        public override void Add()
         {
             if (!Player.Inventory.Passives.Contains(this))
             {
@@ -34,15 +34,15 @@ namespace Game.Core.Items
             }
         }
 
-        public override void Use(Player player, int? itemNumber)
+        public override void Use()
         {
             if(this is Sword)
             {
-                player.Attack += Stats;
+                Game.Player.Attack += Stats;
             }
             else if(this is Armor)
             {
-                player.Defense += Stats;
+                Game.Player.Defense += Stats;
             }
         }
 

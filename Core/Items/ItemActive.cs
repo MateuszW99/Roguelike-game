@@ -19,23 +19,20 @@ namespace Game.Core.Items
             }
         }
 
-        protected ItemActive(int x, int y) : base(x, y)
+        protected ItemActive(int? x, int? y) : base(x, y)
         {
         }
 
 
-        public void Use(int? itemNumber)
+        public override void Use()
         {
-            if(itemNumber == null)
+            if (this.Quantity <= 0)
             {
+                Game.MessageLog.Add($"You don't have any {this.Name} to use.");
                 return;
             }
-            if(Quantity <= 0)
-            {
-                Game.MessageLog.Add($"You don't have any {Name} to use.");
-                return;
-            }
-            Player.Inventory.Actives[itemNumber.GetValueOrDefault()].Quantity--;
+            this.GiveEffect();
+            this.Quantity--;
         }
 
         public virtual void GiveEffect()

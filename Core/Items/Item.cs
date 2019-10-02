@@ -11,10 +11,10 @@ namespace Game.Core.Items
         public string Name { get; set; }
         public char Symbol { get; set; }
 
-        virtual public void Use(Player player, int? itemNumber)
+        virtual public void Use()
         { }
 
-        virtual public void Add(Player player)
+        virtual public void Add()
         { }
 
         // IDrawable
@@ -23,10 +23,14 @@ namespace Game.Core.Items
         public int X { get; set; }
         public int Y { get; set; }
 
-        public Item(int x, int y)
+        public Item(int? x, int? y)
         {
-            X = x;
-            Y = y;
+            if(x == null || y == null)
+            {
+                return;
+            }
+            X = (int)x;
+            Y = (int)y;
         }
 
         public void Draw(RLConsole console, IMap map)
@@ -63,7 +67,7 @@ namespace Game.Core.Items
                 {
                     if (DungeonMap.Items[i] is ItemPassive)
                     {
-                        DungeonMap.Items[i].Use(Game.Player, null);
+                        DungeonMap.Items[i].Use();
                     }
                     else if(DungeonMap.Items[i] is ItemActive)
                     {
