@@ -13,7 +13,7 @@ namespace Game.Core.Items
         private static int quantity = 0;
         public static new int Quantity { get => quantity; set => quantity = value; }
 
-        public ScrollOfTeleport(int x, int y) : base(x, y)
+        public ScrollOfTeleport(int? x, int? y) : base(x, y)
         {
             ScrollOfTeleport.Quantity++;
             Symbol = 'T';
@@ -26,21 +26,16 @@ namespace Game.Core.Items
             while (!teleported)
             {
                 int randomRoom = Game.Random.Next(0, DungeonMap.Rooms.Count - 1);
-                int destinationX = DungeonMap.Rooms[randomRoom].Center.X + 1;
-                int destinationY = DungeonMap.Rooms[randomRoom].Center.Y + 1;
+                int destinationX = DungeonMap.Rooms[randomRoom].Center.X - 1;
+                int destinationY = DungeonMap.Rooms[randomRoom].Center.Y - 1;
                 if(DungeonMap.CanTeleport(destinationX, destinationY))
                 {
-                    Teleport(randomRoom);
+                    Game.DungeonMap.SetActorPostion(Game.Player, destinationX, destinationY);
                     teleported = true;
                 }
             }
         }
 
-        private void Teleport(int numberRoom)
-        {
-            Game.Player.X = DungeonMap.Rooms[numberRoom].X;
-            Game.Player.Y = DungeonMap.Rooms[numberRoom].Y;
-        }
     }
 
 }
