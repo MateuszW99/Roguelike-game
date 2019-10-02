@@ -20,7 +20,7 @@ namespace Game
 
         public static MessageLog MessageLog { get; private set; }
 
-        public static PlayerInventory  PlayerInventory { get; set; }
+        //public static PlayerInventory  PlayerInventory { get; set; }
 
         public static ActionScheduling SchedulingSystem { get; private set; }
 
@@ -83,7 +83,7 @@ namespace Game
             MessageLog.Add($"Level created with seed '{seed}'");
 
             // PlayerInventory keeps player's equipment and prints its content onto the QuickBar
-            PlayerInventory = new PlayerInventory();
+            //PlayerInventory = new PlayerInventory();
 
             PlaceConsoles();
 
@@ -145,6 +145,16 @@ namespace Game
                         didPlayerAct = true;
                     }
                 }
+                else if (keyPress.Key == RLKey.P) // shortcut to get more scrolls for testing
+                {
+                    int? x = null;
+                    int? y = null;
+                    PlayerInventory.AddToQuickBar(new ScrollOfTeleport(x, y));
+                }
+                else if(keyPress.Key == RLKey.Number1)
+                {
+                    didPlayerAct = CommandSystem.UseItem(Quickbar.ScrollTeleport);
+                }
             }
 
             if(didPlayerAct)
@@ -197,7 +207,7 @@ namespace Game
             Player.Draw(mapConsole, DungeonMap);
             Player.DrawStats(Stats, 1);
             MessageLog.Draw(Messages);
-            PlayerInventory.Draw(QuickBar);
+            Player.Inventory.Draw(QuickBar);
         }
     }
 }
