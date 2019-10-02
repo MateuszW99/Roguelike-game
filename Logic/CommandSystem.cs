@@ -11,7 +11,7 @@ namespace Game.Logic
 {
     public class CommandSystem
     {
-        // Return value is true if the playerwas able to move
+        // Return value is true if the player was able to move
         // false is returned when the player couldn't move, i.e. trying to move into a wall
 
         public bool IsPlayerTurn { get; set; }
@@ -19,6 +19,25 @@ namespace Game.Logic
         public void EndPlayerTurn()
         {
             IsPlayerTurn = false;
+        }
+
+        public bool UseItem(Quickbar key)
+        {
+            switch(key)
+            {
+                case Quickbar.ScrollTeleport:
+                    {
+                        Player.Inventory.Actives[0].Use();
+                        return true;
+                    }
+            }
+
+            if(Game.DungeonMap.SetActorPostion(Game.Player, Game.Player.X, Game.Player.Y))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public void ActivateMonsters()
@@ -56,29 +75,29 @@ namespace Game.Logic
 
         public bool MovePlayer(Direction direction)
         {
-            int x = global::Game.Game.Player.X;
-            int y = global::Game.Game.Player.Y;
+            int x = Game.Player.X;
+            int y = Game.Player.Y;
 
             switch(direction)
             {
                 case Direction.Up:
                     {
-                        y = global::Game.Game.Player.Y - 1;
+                        y = Game.Player.Y - 1;
                         break;
                     }
                 case Direction.Down:
                     {
-                        y = global::Game.Game.Player.Y + 1;
+                        y = Game.Player.Y + 1;
                         break;
                     }
                 case Direction.Left:
                     {
-                        x = global::Game.Game.Player.X - 1;
+                        x = Game.Player.X - 1;
                         break;
                     }
                 case Direction.Right:
                     {
-                        x = global::Game.Game.Player.X + 1;
+                        x = Game.Player.X + 1;
                         break;
                     }
                 default:
@@ -86,12 +105,8 @@ namespace Game.Logic
                         return false;
                     }
             }
-            if(Game.DungeonMap.SetActorPostion(Game.Player, x, y))
-            {
-                GoldPile.SearchForGold();
-                Item.SearchForItems();
-                return true;
-            }
+
+            Game.DungeonMap.SetActorPostion(Game.Player, x, y);
 
             Monster monster = Game.DungeonMap.GetMonsterAt(x, y);
 
