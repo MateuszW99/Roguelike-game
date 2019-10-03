@@ -30,7 +30,6 @@ namespace Game.Core
                 _attack = value;
             }
         }
-
         public int AttackChance
         {
             get
@@ -42,7 +41,6 @@ namespace Game.Core
                 _attackChance = value;
             }
         }
-
         public int Awareness
         {
             get
@@ -54,7 +52,6 @@ namespace Game.Core
                 _awareness = value;
             }
         }
-
         public int Defense
         {
             get
@@ -66,7 +63,6 @@ namespace Game.Core
                 _defense = value;
             }
         }
-
         public int DefenseChance
         {
             get
@@ -78,7 +74,6 @@ namespace Game.Core
                 _defenseChance = value;
             }
         }
-
         public int Gold
         {
             get
@@ -90,7 +85,6 @@ namespace Game.Core
                 _gold = value;
             }
         }
-
         public int Health
         {
             get
@@ -102,7 +96,6 @@ namespace Game.Core
                 _health = value;
             }
         }
-
         public int MaxHealth
         {
             get
@@ -114,7 +107,6 @@ namespace Game.Core
                 _maxHealth = value;
             }
         }
-
         public string Name
         {
             get
@@ -126,7 +118,6 @@ namespace Game.Core
                 _name = value;
             }
         }
-
         public int Speed
         {
             get
@@ -139,8 +130,6 @@ namespace Game.Core
             }
         }
 
-
-
         // IDrawable
         public RLColor Color { get; set; }
         public char Symbol { get; set; }
@@ -150,28 +139,22 @@ namespace Game.Core
         // IScheduleable
         public int Time
         {
-            get
-            {
-                return Speed;
-            }
+            get => Speed;
         }
 
         public void Draw(RLConsole console, IMap map)
         {
-            // Don't draw actors in cells that haven't been explored
             if (!map.GetCell(X, Y).IsExplored)
             {
                 return;
             }
 
-            // Only draw the actor with the color and symbol when they are in field-of-view
             if (map.IsInFov(X, Y))
             {
                 console.Set(X, Y, Color, Colors.FloorBackgroundFov, Symbol);
             }
             else
             {
-                // When not in field-of-view just draw a normal floor
                 console.Set(X, Y, Colors.Floor, Colors.FloorBackground, '.');
             }
         }

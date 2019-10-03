@@ -149,11 +149,21 @@ namespace Game
                 {
                     int? x = null;
                     int? y = null;
+                    PlayerInventory.AddToQuickBar(new ScrollOfDestruction(x, y));
+                }
+                else if (keyPress.Key == RLKey.O) // shortcut to get more scrolls for testing
+                {
+                    int? x = null;
+                    int? y = null;
                     PlayerInventory.AddToQuickBar(new ScrollOfTeleport(x, y));
                 }
                 else if(keyPress.Key == RLKey.Number1)
                 {
                     didPlayerAct = CommandSystem.UseItem(Quickbar.ScrollTeleport);
+                }
+                else if(keyPress.Key == RLKey.Number2)
+                {
+                    didPlayerAct = CommandSystem.UseItem(Quickbar.ScrollDestruction);
                 }
             }
 
