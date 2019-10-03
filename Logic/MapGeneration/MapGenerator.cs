@@ -122,6 +122,10 @@ namespace Game.Logic.MapGeneration
             {
                 player = new Player(DungeonMap.Rooms[0].Center);
             }
+            if(!_map.GetCell(player.X, player.Y).IsWalkable)
+            {
+                _map.SetActorPostion(player, DungeonMap.Rooms[0].Center.X, DungeonMap.Rooms[0].Center.Y);
+            }
             _map.AddPlayer(player);
         }
 
@@ -145,7 +149,7 @@ namespace Game.Logic.MapGeneration
                         }
                         if (randomLocation != null)
                         {
-                            // Hard code the monster to be created at level 1
+                            // Hard coded monster to be created at level 1
                             var monster = Kobold.Create(1);
                             monster.X = randomLocation.X;
                             monster.Y = randomLocation.Y;

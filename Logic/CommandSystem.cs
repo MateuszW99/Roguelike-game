@@ -23,6 +23,10 @@ namespace Game.Logic
 
         public bool UseItem(Quickbar key)
         {
+            if (Player.Inventory.Actives.Count == 0)
+            {
+                return false;
+            }
             switch(key)
             {
                 case Quickbar.ScrollTeleport:
