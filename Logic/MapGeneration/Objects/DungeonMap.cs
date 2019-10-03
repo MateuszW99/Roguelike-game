@@ -15,10 +15,10 @@ namespace Game.Logic.MapGeneration
         //private readonly char column = 'o';
 
         public static List<Rectangle> Rooms { get; set; }
-        public List<Monster> Monsters;
-        public static List<GoldPile> GoldPiles;
-        public static List<Column> Columns;
-        public static List<Item> Items;
+        public static List<Monster> Monsters { get; set; }
+        public static List<GoldPile> GoldPiles { get; set; }
+        public static List<Column> Columns { get; set; }
+        public static List<Item> Items { get; set; }
         public List<Door> Doors { get; set; }
         public Stairs StairsUp { get; set; }
         public Stairs StairsDown { get; set; }
@@ -186,7 +186,6 @@ namespace Game.Logic.MapGeneration
             SetIsWalkable(monster.X, monster.Y, true);
             SetCellProperties(monster.X, monster.Y, true, true, true);
             Game.SchedulingSystem.Remove(monster);
-            //DropGold(monster);
         }
 
         public Monster GetMonsterAt(int x, int y)
@@ -253,11 +252,20 @@ namespace Game.Logic.MapGeneration
             return StairsDown.X == player.X && StairsDown.Y == player.Y;
         }
 
-        private static bool IsColumn(int x, int y)
+        private bool IsColumn(int x, int y)
         {
             foreach (Column column in DungeonMap.Columns)
             {
                 if(column.X == x && column.Y == y)
+                return true;
+            }
+            return false;
+        }
+
+        private bool IsMonster(int x, int y)
+        {
+            if(GetMonsterAt(x, y) != null)
+            {
                 return true;
             }
             return false;
@@ -269,13 +277,12 @@ namespace Game.Logic.MapGeneration
             SetCellProperties(cell.X, cell.Y, cell.IsTransparent, cell.IsWalkable, IsExplored);
         }
 
-        public static bool CanTeleport(int x, int y)
+        public bool CanTeleport(int x, int y)
         {
-            if(DungeonMap.IsColumn(x, y))
+            if(IsColumn(x, y) || IsMonster(x, y))
             {
                 return false;
             }
-            // TODO: check for stairs
             return true;
         }
 
