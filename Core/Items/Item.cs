@@ -42,7 +42,22 @@ namespace Game.Core.Items
 
             if (map.IsInFov(X, Y))
             {
-                Color = Colors.FloorFov;
+                if(this is ItemPassive)
+                {
+                    Color = Colors.FloorFov;
+                    
+                }
+                else if(this is ItemActive)
+                {
+                    if(this is HealthPotion)
+                    {
+                        Color = Colors.Potion;
+                    }
+                    else
+                    {
+                        Color = Colors.Scroll;
+                    }
+                }
                 ColorBackground = Colors.FloorBackground;
                 console.Set(X, Y, Color, ColorBackground, Symbol);
             }
