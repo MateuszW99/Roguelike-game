@@ -10,12 +10,13 @@ namespace Game.Core.Items
 {
     public class ScrollOfTeleport : ItemActive
     {
-        private static int quantity = 0;
-        public static new int Quantity { get => quantity; set => quantity = value; }
+        //private static int quantity = 0;
+        //public static new int Quantity { get => quantity; set => quantity = value; }
 
         public ScrollOfTeleport(int? x, int? y) : base(x, y)
         {
-            ScrollOfTeleport.Quantity++;
+            //Quantity++;
+            //ScrollOfTeleport.Quantity++;
             Symbol = 'T';
             Name = "Scroll of Teleportation";
         }
@@ -28,9 +29,10 @@ namespace Game.Core.Items
                 int randomRoom = Game.Random.Next(0, DungeonMap.Rooms.Count - 1);
                 int destinationX = DungeonMap.Rooms[randomRoom].Center.X - 1;
                 int destinationY = DungeonMap.Rooms[randomRoom].Center.Y - 1;
-                if(DungeonMap.CanTeleport(destinationX, destinationY))
+                if(Game.DungeonMap.CanTeleport(destinationX, destinationY))
                 {
                     Game.DungeonMap.SetActorPostion(Game.Player, destinationX, destinationY);
+                    
                     teleported = true;
                 }
             }
