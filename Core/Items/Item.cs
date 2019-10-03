@@ -44,13 +44,16 @@ namespace Game.Core.Items
             {
                 Color = Colors.FloorFov;
                 ColorBackground = Colors.FloorBackground;
+                console.Set(X, Y, Color, ColorBackground, Symbol);
             }
             else
             {
                 Color = Colors.Floor;
                 ColorBackground = Colors.FloorBackground;
+                console.SetColor(X, Y, Color);
+                console.SetBackColor(X, Y, ColorBackground);
             }
-            console.Set(X, Y, Color, ColorBackground, Symbol);
+            
         }
 
         public virtual void DropItem(Monster monster)
