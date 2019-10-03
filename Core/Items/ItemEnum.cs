@@ -2,6 +2,6 @@
 {
     public enum Quickbar
     {
-        ScrollTeleport = 0, ScrollDestruction, Third
+        ScrollTeleport = 0, ScrollDestruction, HealthPotion
     }
 }

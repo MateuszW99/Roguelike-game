@@ -43,6 +43,11 @@ namespace Game.Logic
                             Player.Inventory.Actives[1].Use();
                             return true;
                         }
+                    case Quickbar.HealthPotion:
+                        {
+                            Player.Inventory.Actives[2].Use();
+                            return true;
+                        }
                 }
             }
             catch (ArgumentOutOfRangeException)

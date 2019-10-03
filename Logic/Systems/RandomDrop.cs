@@ -37,7 +37,7 @@ namespace Game.Logic
                 case 9:
                 case 10:
                     {
-                        ScrollOfDestruction scroll = new ScrollOfDestruction(monster.X, monster.Y);
+                        HealthPotion scroll = new HealthPotion(monster.X, monster.Y);
                         scroll.DropItem(monster);
                         return;
                     }
