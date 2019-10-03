@@ -4,8 +4,6 @@ namespace Game.Core
 {
     class Palette
     {
-        // http://paletton.com/#uid=73d0u0k5qgb2NnT41jT74c8bJ8X
-
         public static RLColor PrimaryLightest = new RLColor(110, 121, 119);
         public static RLColor PrimaryLighter = new RLColor(88, 100, 98);
         public static RLColor Primary = new RLColor(68, 82, 79);
@@ -30,8 +28,6 @@ namespace Game.Core
         public static RLColor ComplimentDarker = new RLColor(97, 84, 75);
         public static RLColor ComplimentDarkest = new RLColor(71, 56, 45);
 
-        // http://pixeljoint.com/forum/forum_posts.asp?TID=12795
-
         public static RLColor DbDark = new RLColor(20, 12, 28);
         public static RLColor DbOldBlood = new RLColor(68, 36, 52);
         public static RLColor DbDeepWater = new RLColor(48, 52, 109);
@@ -50,5 +46,7 @@ namespace Game.Core
         public static RLColor DbLight = new RLColor(222, 238, 214);
         //public static RLColor DbLight = new RLColor(60, 135, 22);
         public static RLColor DbGold = new RLColor(255, 192, 0);
+        public static RLColor DbScroll = new RLColor(193, 161, 56);
+        public static RLColor dbHpPotion = new RLColor(255, 58, 18);
     }
 }
