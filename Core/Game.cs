@@ -11,18 +11,11 @@ namespace Game
     class Game
     {
         public static IRandom Random { get; private set; }
-
         public static Player Player { get; set; }
-
-        public static DungeonMap DungeonMap { get; private set; }
-
-        public static CommandSystem CommandSystem { get; private set; }
-
-        public static MessageLog MessageLog { get; private set; }
-
-        //public static PlayerInventory  PlayerInventory { get; set; }
-
-        public static ActionScheduling SchedulingSystem { get; private set; }
+        public static DungeonMap DungeonMap { get; set; }
+        public static CommandSystem CommandSystem { get; set; }
+        public static MessageLog MessageLog { get; set; }
+        public static ActionScheduling SchedulingSystem { get; set; }
 
         public static int mapLevel = 1;
 
@@ -31,28 +24,28 @@ namespace Game
         public static bool runGame = true;
 
         // The screen height and width are in number of tiles
-        private static readonly int _screenWidth = 100;
-        private static readonly int _screenHeight = 70;
-        private static RLRootConsole rootConsole;
+        public static readonly int screenWidth = 100;
+        public static readonly int screenHeight = 70;
+        public static RLRootConsole rootConsole;
 
         // The map console takes up most of the screen and is where the map will be drawn
-        private static readonly int _mapWidth = 80;
-        private static readonly int _mapHeight = 48;
-        private static RLConsole mapConsole;
+        public static readonly int mapWidth = 80;
+        public static readonly int mapHeight = 48;
+        public static RLConsole mapConsole;
 
         // Below the map console is the message console which displays attack rolls and other information
-        private static readonly int _messageWidth = 80;
-        private static readonly int _messageHeight = 11;
+        private static readonly int messageWidth = 80;
+        private static readonly int messageHeight = 11;
         private static RLConsole Messages;
 
         // The stat console is to the right of the map and display player and monster stats
-        private static readonly int _statWidth = 20;
-        private static readonly int _statHeight = 70;
+        private static readonly int statWidth = 20;
+        private static readonly int statHeight = 70;
         private static RLConsole Stats;
 
-        // Above the map is the inventory console which shows the players equipment, abilities, and items
-        private static readonly int _inventoryWidth = 80;
-        private static readonly int _inventoryHeight = 11;
+        // Above the map is the inventory console which shows the players items
+        private static readonly int quickbarWidth = 80;
+        private static readonly int quickbarHeight = 11;
         private static RLConsole QuickBar;
 
         public static void Main()
@@ -63,15 +56,15 @@ namespace Game
             string fontFileName = "terminal8x8.png";
             string consoleTitle = $"Game tutorial - Level {mapLevel} - Seed {seed}";
 
-            rootConsole = new RLRootConsole(fontFileName, _screenWidth, _screenHeight, 8, 8, 1f, consoleTitle);
-            mapConsole = new RLConsole(_mapWidth, _mapHeight);
-            Messages = new RLConsole(_messageWidth, _messageHeight);
-            Stats = new RLConsole(_statWidth, _statHeight);
-            QuickBar = new RLConsole(_inventoryWidth, _inventoryHeight);
+            rootConsole = new RLRootConsole(fontFileName, screenWidth, screenHeight, 8, 8, 1f, consoleTitle);
+            mapConsole = new RLConsole(mapWidth, mapHeight);
+            Messages = new RLConsole(messageWidth, messageHeight);
+            Stats = new RLConsole(statWidth, statHeight);
+            QuickBar = new RLConsole(quickbarWidth, quickbarHeight);
 
             SchedulingSystem = new ActionScheduling();
 
-            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 20, 13, 7, mapLevel);
+            MapGenerator mapGenerator = new MapGenerator(mapWidth, mapHeight, 20, 13, 7, mapLevel);
             DungeonMap = mapGenerator.CreateMap(mapConsole);
             DungeonMap.UpdatePlayerFieldOfView();
 
@@ -98,10 +91,10 @@ namespace Game
         private static void PlaceConsoles()
         {
             // Set backround colors and text for each console
-            mapConsole.SetBackColor(0, 0, _mapWidth, _mapHeight, Colors.FloorBackground);
+            mapConsole.SetBackColor(0, 0, mapWidth, mapHeight, Colors.FloorBackground);
             mapConsole.Print(1, 1, "", Colors.TextHeading);
 
-            //QuickBar.SetBackColor(0, 0, _inventoryWidth, _inventoryHeight, Palette.DbWood);
+            //QuickBar.SetBackColor(0, 0, quickbarWidth, quickbarHeight, Palette.DbWood);
             //QuickBar.Print(1, 1, "Inventory", Colors.TextHeading);
         }
 
@@ -109,63 +102,8 @@ namespace Game
         {
             bool didPlayerAct = false;
             RLKeyPress keyPress = rootConsole.Keyboard.GetKeyPress();
-            
-            if(keyPress != null)
-            {
-                if (keyPress.Key == RLKey.Up)
-                {
-                    didPlayerAct = CommandSystem.MovePlayer(Direction.Up);
-                }
-                else if (keyPress.Key == RLKey.Down)
-                {
-                    didPlayerAct = CommandSystem.MovePlayer(Direction.Down);
-                }
-                else if (keyPress.Key == RLKey.Left)
-                {
-                    didPlayerAct = CommandSystem.MovePlayer(Direction.Left);
-                }
-                else if (keyPress.Key == RLKey.Right)
-                {
-                    didPlayerAct = CommandSystem.MovePlayer(Direction.Right);
-                }
-                else if(keyPress.Key == RLKey.Escape)
-                {
-                    rootConsole.Close();
-                }
-                else if(keyPress.Key == RLKey.Period)
-                {
-                    if(DungeonMap.CanMoveDownToNextLevel())
-                    {
-                        MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 20, 13, 7, ++mapLevel);
-                        DungeonMap = mapGenerator.CreateMap(mapConsole);
-                        MessageLog = new MessageLog();                    
-                        CommandSystem = new CommandSystem();
-                        rootConsole.Title = $"Game - Level {mapLevel}";
-                        MessageLog.Add($"You reached {mapLevel} level!");
-                        didPlayerAct = true;
-                    }
-                }
-                else if (keyPress.Key == RLKey.P) // shortcut to get more scrolls for testing
-                {
-                    int? x = null;
-                    int? y = null;
-                    PlayerInventory.AddToQuickBar(new ScrollOfDestruction(x, y));
-                }
-                else if (keyPress.Key == RLKey.O) // shortcut to get more scrolls for testing
-                {
-                    int? x = null;
-                    int? y = null;
-                    PlayerInventory.AddToQuickBar(new ScrollOfTeleport(x, y));
-                }
-                else if(keyPress.Key == RLKey.Number1)
-                {
-                    didPlayerAct = CommandSystem.UseItem(Quickbar.ScrollTeleport);
-                }
-                else if(keyPress.Key == RLKey.Number2)
-                {
-                    didPlayerAct = CommandSystem.UseItem(Quickbar.ScrollDestruction);
-                }
-            }
+
+            didPlayerAct = CommandSystem.GetKeyPress(keyPress);
 
             if(didPlayerAct)
             {
@@ -188,13 +126,13 @@ namespace Game
                 DrawConsoles();
 
                 // Blit the sub consoles to the root console in the correct locations
-                RLConsole.Blit(mapConsole, 0, 0, _mapWidth, _mapHeight,
-                 rootConsole, 0, _inventoryHeight);
-                RLConsole.Blit(Stats, 0, 0, _statWidth, _statHeight,
-                  rootConsole, _mapWidth, 0);
-                RLConsole.Blit(Messages, 0, 0, _messageWidth, _messageHeight,
-                  rootConsole, 0, _screenHeight - _messageHeight);
-                RLConsole.Blit(QuickBar, 0, 0, _inventoryWidth, _inventoryHeight,
+                RLConsole.Blit(mapConsole, 0, 0, mapWidth, mapHeight,
+                 rootConsole, 0, quickbarHeight);
+                RLConsole.Blit(Stats, 0, 0, statWidth, statHeight,
+                  rootConsole, mapWidth, 0);
+                RLConsole.Blit(Messages, 0, 0, messageWidth, messageHeight,
+                  rootConsole, 0, screenHeight - messageHeight);
+                RLConsole.Blit(QuickBar, 0, 0, quickbarWidth, quickbarHeight,
                   rootConsole, 0, 0);
 
                 rootConsole.Draw();
