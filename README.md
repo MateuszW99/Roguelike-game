@@ -8,4 +8,8 @@ Things I implemented are:
   active items with quickbar at the top of the screen;
 - fixed a bug where getting on a new floor would place player in an unwalkable space.
 
-More updates on the way.
+Things I'm planning to add:
+- more monsters with different types of attack(ranged) and bosses after every 5th floor;
+- more items with different chances to drop;
+- visual effects when using an item;
+- game ends when the player dies.
