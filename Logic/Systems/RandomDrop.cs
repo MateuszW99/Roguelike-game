@@ -14,31 +14,50 @@ namespace Game.Logic
                 
                 case 1:
                 case 2:
-                case 3:
                     {
                         GoldPile.DropGold(monster);
                         return;
                     }
+                case 3:
                 case 4:
                     {
                         Sword sword = new Sword(monster.X, monster.Y);
                         sword.DropItem(monster);
                         return;
                     }
-                case 5: 
+                case 5:
+                case 6:
                     {
                         Armor armor = new Armor(monster.X, monster.Y);
                         armor.DropItem(monster);
                         return;
                     }
-                case 6:
                 case 7:
                 case 8:
-                case 9:
-                case 10:
                     {
-                        HealthPotion scroll = new HealthPotion(monster.X, monster.Y);
-                        scroll.DropItem(monster);
+                        int randomDrop = Game.Random.Next(0, 4);
+                        if (randomDrop == 0)
+                        {
+                            return;
+                        }
+                        else if (randomDrop == 1)
+                        {
+                            ScrollOfTeleport scroll = new ScrollOfTeleport(monster.X, monster.Y);
+                            scroll.DropItem(monster);
+                            return;
+                        }
+                        else if (randomDrop == 2)
+                        {
+                            ScrollOfDestruction scroll = new ScrollOfDestruction(monster.X, monster.Y);
+                            scroll.DropItem(monster);
+                            return;
+                        }
+                        else if (randomDrop == 3 || randomDrop == 4)
+                        {
+                            HealthPotion potion = new HealthPotion(monster.X, monster.Y);
+                            potion.DropItem(monster);
+                            return;
+                        }
                         return;
                     }
                 default:
