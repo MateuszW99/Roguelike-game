@@ -23,6 +23,70 @@ namespace Game.Logic
             IsPlayerTurn = false;
         }
 
+        public bool GetKeyPress(RLKeyPress keyPress)
+        {
+            if (keyPress != null)
+            {
+                if (keyPress.Key == RLKey.Up)
+                {
+                    return MovePlayer(Direction.Up);
+                }
+                else if (keyPress.Key == RLKey.Down)
+                {
+                    return MovePlayer(Direction.Down);
+                }
+                else if (keyPress.Key == RLKey.Left)
+                {
+                    return MovePlayer(Direction.Left);
+                }
+                else if (keyPress.Key == RLKey.Right)
+                {
+                    return MovePlayer(Direction.Right);
+                }
+                else if (keyPress.Key == RLKey.Escape)
+                {
+                    Game.rootConsole.Close();
+                }
+                else if (keyPress.Key == RLKey.Period)
+                {
+                    if (Game.DungeonMap.CanMoveDownToNextLevel())
+                    {
+                        MapGenerator mapGenerator = new MapGenerator(Game.mapWidth, Game.mapHeight, 20, 13, 7, ++Game.mapLevel);
+                        Game.DungeonMap = mapGenerator.CreateMap(Game.mapConsole);
+                        Game.MessageLog = new MessageLog();
+                        Game.CommandSystem = new CommandSystem();
+                        Game.rootConsole.Title = $"Game - Level {Game.mapLevel}";
+                        Game.MessageLog.Add($"You reached {Game.mapLevel} level!");
+                        return true;
+                    }
+                }
+                else if (keyPress.Key == RLKey.P) // shortcut to get more scrolls for testing
+                {
+                    int? x = null;
+                    int? y = null;
+                    PlayerInventory.AddToQuickBar(new ScrollOfDestruction(x, y));
+                }
+                else if (keyPress.Key == RLKey.O) // shortcut to get more scrolls for testing
+                {
+                    int? x = null;
+                    int? y = null;
+                    PlayerInventory.AddToQuickBar(new ScrollOfTeleport(x, y));
+                }
+                else if (keyPress.Key == RLKey.Number1)
+                {
+                    return UseItem(Quickbar.ScrollTeleport);
+                }
+                else if (keyPress.Key == RLKey.Number2)
+                {
+                    return UseItem(Quickbar.ScrollDestruction);
+                }
+
+                
+            }
+            return false;
+        }
+
+
         public bool UseItem(Quickbar key)
         {
             if (Player.Inventory.Actives.Count == 0)
@@ -75,7 +139,6 @@ namespace Game.Logic
             else
             {
                 Monster monster = scheduleable as Monster;
-
                 if(monster != null)
                 {
                     monster.PerformAction(this);
