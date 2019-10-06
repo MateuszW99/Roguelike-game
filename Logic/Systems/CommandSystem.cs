@@ -1,23 +1,129 @@
 ﻿using Game.Core;
+using Game.Core.Items;
 using Game.Interfaces;
 using Game.Logic.MapGeneration;
 using RLNET;
 using RogueSharp;
 using RogueSharp.DiceNotation;
+using System;
 using System.Text;
 
 namespace Game.Logic
 {
     public class CommandSystem
     {
-        // Return value is true if the playerwas able to move
+        // Return value is true if the player was able to move
         // false is returned when the player couldn't move, i.e. trying to move into a wall
+
 
         public bool IsPlayerTurn { get; set; }
 
         public void EndPlayerTurn()
         {
             IsPlayerTurn = false;
+        }
+
+        public bool GetKeyPress(RLKeyPress keyPress)
+        {
+            if (keyPress != null)
+            {
+                if (keyPress.Key == RLKey.Up)
+                {
+                    return MovePlayer(Direction.Up);
+                }
+                else if (keyPress.Key == RLKey.Down)
+                {
+                    return MovePlayer(Direction.Down);
+                }
+                else if (keyPress.Key == RLKey.Left)
+                {
+                    return MovePlayer(Direction.Left);
+                }
+                else if (keyPress.Key == RLKey.Right)
+                {
+                    return MovePlayer(Direction.Right);
+                }
+                else if (keyPress.Key == RLKey.Escape)
+                {
+                    Game.rootConsole.Close();
+                }
+                else if (keyPress.Key == RLKey.Period)
+                {
+                    if (Game.DungeonMap.CanMoveDownToNextLevel())
+                    {
+                        MapGenerator mapGenerator = new MapGenerator(Game.mapWidth, Game.mapHeight, 20, 13, 7, ++Game.mapLevel);
+                        Game.DungeonMap = mapGenerator.CreateMap(Game.mapConsole);
+                        Game.MessageLog = new MessageLog();
+                        Game.CommandSystem = new CommandSystem();
+                        Game.rootConsole.Title = $"Game - Level {Game.mapLevel}";
+                        Game.MessageLog.Add($"You reached {Game.mapLevel} level!");
+                        return true;
+                    }
+                }
+                else if (keyPress.Key == RLKey.P) // shortcut to get more scrolls for testing
+                {
+                    int? x = null;
+                    int? y = null;
+                    PlayerInventory.AddToQuickBar(new ScrollOfDestruction(x, y));
+                }
+                else if (keyPress.Key == RLKey.O)
+                {
+                    int? x = null;
+                    int? y = null;
+                    PlayerInventory.AddToQuickBar(new ScrollOfTeleport(x, y));
+                }
+                else if (keyPress.Key == RLKey.Number1)
+                {
+                    return UseItem(0);
+                }
+                else if (keyPress.Key == RLKey.Number2)
+                {
+                    return UseItem(1);
+                }
+                else if(keyPress.Key == RLKey.Number3)
+                {
+                    return UseItem(2);
+                }
+
+                
+            }
+            return false;
+        }
+
+
+        public bool UseItem(int key)
+        {
+            if (Player.Inventory.Actives.Count == 0)
+            {
+                return false;
+            }
+            try
+            {
+                switch (key)
+                {
+                    case 0:
+                        {
+                            Player.Inventory.Actives[0].Use();
+                            return true;
+                        }
+                    case 1:
+                        {
+                            Player.Inventory.Actives[1].Use();
+                            return true;
+                        }
+                    case 2:
+                        {
+                            Player.Inventory.Actives[2].Use();
+                            return true;
+                        }
+                }
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                Game.MessageLog.Add("No item to use");
+                return false;
+            }
+            return false;
         }
 
         public void ActivateMonsters()
@@ -31,7 +137,6 @@ namespace Game.Logic
             else
             {
                 Monster monster = scheduleable as Monster;
-
                 if(monster != null)
                 {
                     monster.PerformAction(this);
@@ -55,29 +160,29 @@ namespace Game.Logic
 
         public bool MovePlayer(Direction direction)
         {
-            int x = global::Game.Game.Player.X;
-            int y = global::Game.Game.Player.Y;
+            int x = Game.Player.X;
+            int y = Game.Player.Y;
 
             switch(direction)
             {
                 case Direction.Up:
                     {
-                        y = global::Game.Game.Player.Y - 1;
+                        y = Game.Player.Y - 1;
                         break;
                     }
                 case Direction.Down:
                     {
-                        y = global::Game.Game.Player.Y + 1;
+                        y = Game.Player.Y + 1;
                         break;
                     }
                 case Direction.Left:
                     {
-                        x = global::Game.Game.Player.X - 1;
+                        x = Game.Player.X - 1;
                         break;
                     }
                 case Direction.Right:
                     {
-                        x = global::Game.Game.Player.X + 1;
+                        x = Game.Player.X + 1;
                         break;
                     }
                 default:
@@ -85,11 +190,8 @@ namespace Game.Logic
                         return false;
                     }
             }
-            if(Game.DungeonMap.SetActorPostion(Game.Player, x, y))
-            {
-                GoldPile.SearchForGold();
-                return true;
-            }
+
+            Game.DungeonMap.SetActorPostion(Game.Player, x, y);
 
             Monster monster = Game.DungeonMap.GetMonsterAt(x, y);
 
@@ -187,7 +289,7 @@ namespace Game.Logic
         {
             if(damage > 0)
             {
-                defender.Health = defender.Health - damage;
+                defender.Health -= damage;
 
                 Game.MessageLog.Add($"  {defender.Name} was hit for {damage} damage.");
                 if(defender.Health <= 0)
@@ -205,12 +307,12 @@ namespace Game.Logic
         {
             if(actor is Player)
             {
-                Game.MessageLog.Add("You just died. Game over!");      
+                Game.MessageLog.Add("You just died. Game over!");
             }
             else if(actor is Monster)
             {
                 Game.DungeonMap.RemoveMonster((Monster)actor);
-                GoldPile.DropGold((Monster)actor);
+                RandomDrop.Next((Monster)actor);
             }
         }
 

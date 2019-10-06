@@ -4,53 +4,49 @@ using Game.Core;
 using Game.Logic;
 using RogueSharp.Random;
 using Game.Logic.MapGeneration;
+using Game.Core.Items;
 
 namespace Game
 {
     class Game
     {
         public static IRandom Random { get; private set; }
-
         public static Player Player { get; set; }
-
-        public static DungeonMap DungeonMap { get; private set; }
-
-        public static CommandSystem CommandSystem { get; private set; }
-
-        public static MessageLog MessageLog { get; private set; }
-
-        public static ActionScheduling SchedulingSystem { get; private set; }
+        public static DungeonMap DungeonMap { get; set; }
+        public static CommandSystem CommandSystem { get; set; }
+        public static MessageLog MessageLog { get; set; }
+        public static ActionScheduling SchedulingSystem { get; set; }
 
         public static int mapLevel = 1;
 
-        public static bool _renderRequired = true;
+        public static bool renderRequired = true;
 
         public static bool runGame = true;
 
         // The screen height and width are in number of tiles
-        private static readonly int _screenWidth = 100;
-        private static readonly int _screenHeight = 70;
-        private static RLRootConsole _rootConsole;
+        public static readonly int screenWidth = 100;
+        public static readonly int screenHeight = 70;
+        public static RLRootConsole rootConsole;
 
         // The map console takes up most of the screen and is where the map will be drawn
-        private static readonly int _mapWidth = 80;
-        private static readonly int _mapHeight = 48;
-        private static RLConsole _mapConsole;
+        public static readonly int mapWidth = 80;
+        public static readonly int mapHeight = 48;
+        public static RLConsole mapConsole;
 
         // Below the map console is the message console which displays attack rolls and other information
-        private static readonly int _messageWidth = 80;
-        private static readonly int _messageHeight = 11;
-        private static RLConsole _messageConsole;
+        private static readonly int messageWidth = 80;
+        private static readonly int messageHeight = 11;
+        private static RLConsole Messages;
 
         // The stat console is to the right of the map and display player and monster stats
-        private static readonly int _statWidth = 20;
-        private static readonly int _statHeight = 70;
-        private static RLConsole _statConsole;
+        private static readonly int statWidth = 20;
+        private static readonly int statHeight = 70;
+        private static RLConsole Stats;
 
-        // Above the map is the inventory console which shows the players equipment, abilities, and items
-        private static readonly int _inventoryWidth = 80;
-        private static readonly int _inventoryHeight = 11;
-        private static RLConsole _inventoryConsole;
+        // Above the map is the inventory console which shows the players items
+        private static readonly int quickbarWidth = 80;
+        private static readonly int quickbarHeight = 11;
+        private static RLConsole QuickBar;
 
         public static void Main()
         {
@@ -60,16 +56,16 @@ namespace Game
             string fontFileName = "terminal8x8.png";
             string consoleTitle = $"Game tutorial - Level {mapLevel} - Seed {seed}";
 
-            _rootConsole = new RLRootConsole(fontFileName, _screenWidth, _screenHeight, 8, 8, 1f, consoleTitle);
-            _mapConsole = new RLConsole(_mapWidth, _mapHeight);
-            _messageConsole = new RLConsole(_messageWidth, _messageHeight);
-            _statConsole = new RLConsole(_statWidth, _statHeight);
-            _inventoryConsole = new RLConsole(_inventoryWidth, _inventoryHeight);
+            rootConsole = new RLRootConsole(fontFileName, screenWidth, screenHeight, 8, 8, 1f, consoleTitle);
+            mapConsole = new RLConsole(mapWidth, mapHeight);
+            Messages = new RLConsole(messageWidth, messageHeight);
+            Stats = new RLConsole(statWidth, statHeight);
+            QuickBar = new RLConsole(quickbarWidth, quickbarHeight);
 
             SchedulingSystem = new ActionScheduling();
-            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 20, 13, 7, mapLevel);
-            DungeonMap = mapGenerator.CreateMap(_mapConsole);
-            //Player = new Player(DungeonMap.Rooms[0].Center);//
+
+            MapGenerator mapGenerator = new MapGenerator(mapWidth, mapHeight, 20, 13, 7, mapLevel);
+            DungeonMap = mapGenerator.CreateMap(mapConsole);
             DungeonMap.UpdatePlayerFieldOfView();
 
             CommandSystem = new CommandSystem();
@@ -79,117 +75,87 @@ namespace Game
             MessageLog.Add("The rogue arrives on level 1");
             MessageLog.Add($"Level created with seed '{seed}'");
 
+            // PlayerInventory keeps player's equipment and prints its content onto the QuickBar
+            //PlayerInventory = new PlayerInventory();
+
             PlaceConsoles();
 
-            _rootConsole.Render += OnRootConsoleUpdate;
-            _rootConsole.Render += OnRootConsoleRender;
+            rootConsole.Render += OnRootConsoleUpdate;
+            rootConsole.Render += OnRootConsoleRender;
 
 
-            _rootConsole.Run();
+            rootConsole.Run();
         }
 
 
         private static void PlaceConsoles()
         {
             // Set backround colors and text for each console
-            _mapConsole.SetBackColor(0, 0, _mapWidth, _mapHeight, Colors.FloorBackground);
-            _mapConsole.Print(1, 1, "", Colors.TextHeading);
+            mapConsole.SetBackColor(0, 0, mapWidth, mapHeight, Colors.FloorBackground);
+            mapConsole.Print(1, 1, "", Colors.TextHeading);
 
-            _inventoryConsole.SetBackColor(0, 0, _inventoryWidth, _inventoryHeight, Palette.DbWood);
-            _inventoryConsole.Print(1, 1, "Inventory", Colors.TextHeading);
+            //QuickBar.SetBackColor(0, 0, quickbarWidth, quickbarHeight, Palette.DbWood);
+            //QuickBar.Print(1, 1, "Inventory", Colors.TextHeading);
         }
 
         private static void OnRootConsoleUpdate(object sender, UpdateEventArgs e)
         {
             bool didPlayerAct = false;
-            RLKeyPress keyPress = _rootConsole.Keyboard.GetKeyPress();
-            
-            if(keyPress != null)
-            {
-                if (keyPress.Key == RLKey.Up)
-                {
-                    didPlayerAct = CommandSystem.MovePlayer(Direction.Up);
-                }
-                else if (keyPress.Key == RLKey.Down)
-                {
-                    didPlayerAct = CommandSystem.MovePlayer(Direction.Down);
-                }
-                else if (keyPress.Key == RLKey.Left)
-                {
-                    didPlayerAct = CommandSystem.MovePlayer(Direction.Left);
-                }
-                else if (keyPress.Key == RLKey.Right)
-                {
-                    didPlayerAct = CommandSystem.MovePlayer(Direction.Right);
-                }
-                else if(keyPress.Key == RLKey.Escape)
-                {
-                    _rootConsole.Close();
-                }
-                else if(keyPress.Key == RLKey.Period)
-                {
-                    if(DungeonMap.CanMoveDownToNextLevel())
-                    {
-                        MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 20, 13, 7, ++mapLevel);
-                        DungeonMap = mapGenerator.CreateMap(_mapConsole);
-                        MessageLog = new MessageLog();                    
-                        CommandSystem = new CommandSystem();
-                        _rootConsole.Title = $"Game - Level {mapLevel}";
-                        MessageLog.Add($"You reached {mapLevel} level!");
-                        didPlayerAct = true;
-                    }
-                }
-            }
+            RLKeyPress keyPress = rootConsole.Keyboard.GetKeyPress();
+
+            didPlayerAct = CommandSystem.GetKeyPress(keyPress);
 
             if(didPlayerAct)
             {
-                _renderRequired = true;
+                renderRequired = true;
                 CommandSystem.EndPlayerTurn();
             }
             else
             {
                 CommandSystem.ActivateMonsters();
-                _renderRequired = true;
+                renderRequired = true;
             }
         }
 
         private static void OnRootConsoleRender(object sender, UpdateEventArgs e)
         {
-            if (_renderRequired)
+            if (renderRequired)
             {
                 ClearConsoles();
 
                 DrawConsoles();
 
                 // Blit the sub consoles to the root console in the correct locations
-                RLConsole.Blit(_mapConsole, 0, 0, _mapWidth, _mapHeight,
-                 _rootConsole, 0, _inventoryHeight);
-                RLConsole.Blit(_statConsole, 0, 0, _statWidth, _statHeight,
-                  _rootConsole, _mapWidth, 0);
-                RLConsole.Blit(_messageConsole, 0, 0, _messageWidth, _messageHeight,
-                  _rootConsole, 0, _screenHeight - _messageHeight);
-                RLConsole.Blit(_inventoryConsole, 0, 0, _inventoryWidth, _inventoryHeight,
-                  _rootConsole, 0, 0);
+                RLConsole.Blit(mapConsole, 0, 0, mapWidth, mapHeight,
+                 rootConsole, 0, quickbarHeight);
+                RLConsole.Blit(Stats, 0, 0, statWidth, statHeight,
+                  rootConsole, mapWidth, 0);
+                RLConsole.Blit(Messages, 0, 0, messageWidth, messageHeight,
+                  rootConsole, 0, screenHeight - messageHeight);
+                RLConsole.Blit(QuickBar, 0, 0, quickbarWidth, quickbarHeight,
+                  rootConsole, 0, 0);
 
-                _rootConsole.Draw();
+                rootConsole.Draw();
                 
-                _renderRequired = false;
+                renderRequired = false;
             }
         }
 
         private static void ClearConsoles()
         {
-            _mapConsole.Clear();
-            _statConsole.Clear();
-            _messageConsole.Clear();
+            mapConsole.Clear();
+            Stats.Clear();
+            Messages.Clear();
+            QuickBar.Clear();
         }
 
         private static void DrawConsoles()
         {
-            DungeonMap.Draw(_mapConsole, _statConsole);
-            Player.Draw(_mapConsole, DungeonMap);
-            Player.DrawStats(_statConsole);
-            MessageLog.Draw(_messageConsole);
+            DungeonMap.Draw(mapConsole, Stats);
+            Player.Draw(mapConsole, DungeonMap);
+            Player.DrawStats(Stats, 1);
+            MessageLog.Draw(Messages);
+            Player.Inventory.Draw(QuickBar);
         }
     }
 }

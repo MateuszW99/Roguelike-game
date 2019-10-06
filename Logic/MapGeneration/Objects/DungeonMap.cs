@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Core;
 using Game.Logic.MapGeneration.Objects;
+using Game.Core.Items;
 
 namespace Game.Logic.MapGeneration
 {
@@ -13,10 +14,11 @@ namespace Game.Logic.MapGeneration
         private readonly char wall = '#';
         //private readonly char column = 'o';
 
-        public List<Rectangle> Rooms { get; set; }
-        public List<Monster> Monsters;
-        public static List<GoldPile> GoldPiles;
-        public List<Column> Columns;
+        public static List<Rectangle> Rooms { get; set; }
+        public static List<Monster> Monsters { get; set; }
+        public static List<GoldPile> GoldPiles { get; set; }
+        public static List<Column> Columns { get; set; }
+        public static List<Item> Items { get; set; }
         public List<Door> Doors { get; set; }
         public Stairs StairsUp { get; set; }
         public Stairs StairsDown { get; set; }
@@ -32,10 +34,11 @@ namespace Game.Logic.MapGeneration
             GoldPiles = new List<GoldPile>();
             Columns = new List<Column>();
             Doors = new List<Door>();
+            Items = new List<Item>();
         }
 
         // The draw method is called every time the map is updated
-        // it will render all of the symbols/colors for each cell to the map sub console
+        // it will render all of the symbols/colors for each cell to the map console
         public void Draw(RLConsole mapConsole, RLConsole statConsole)
         {
             foreach (Cell cell in GetAllCells())
@@ -71,6 +74,11 @@ namespace Game.Logic.MapGeneration
             foreach(GoldPile gold in GoldPiles)
             {
                 gold.Draw(mapConsole, this);
+            }
+
+            foreach(Item item in Items)
+            {
+                item.Draw(mapConsole, this);
             }
         }
 
@@ -142,6 +150,8 @@ namespace Game.Logic.MapGeneration
                 if(actor is Player)
                 {
                     UpdatePlayerFieldOfView();
+                    Item.SearchForItems();
+                    GoldPile.SearchForGold();
                 }
                 return true;
             }
@@ -176,7 +186,6 @@ namespace Game.Logic.MapGeneration
             SetIsWalkable(monster.X, monster.Y, true);
             SetCellProperties(monster.X, monster.Y, true, true, true);
             Game.SchedulingSystem.Remove(monster);
-            //DropGold(monster);
         }
 
         public Monster GetMonsterAt(int x, int y)
@@ -186,7 +195,7 @@ namespace Game.Logic.MapGeneration
 
         public Point? GetRandomWalkableLocation(Rectangle room)
         {
-            if (DoesRoomHasWalkableSpace(room))
+            if(DoesRoomHasWalkableSpace(room))
             {
                 for (int i = 0; i < 100; i++)
                 {
@@ -218,21 +227,6 @@ namespace Game.Logic.MapGeneration
         }
 
 
-
-
-
-        private bool IsObstacle(int x, int y)
-        {
-            foreach(Column cell in Columns)
-            {
-                if(cell.X == x && cell.Y == y)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         // Return the door at (x, y) or null if there is none
         public Door GetDoor(int x, int y)
         {
@@ -260,9 +254,18 @@ namespace Game.Logic.MapGeneration
 
         private bool IsColumn(int x, int y)
         {
-            foreach (Column column in Columns)
+            foreach (Column column in DungeonMap.Columns)
             {
                 if(column.X == x && column.Y == y)
+                return true;
+            }
+            return false;
+        }
+
+        private bool IsMonster(int x, int y)
+        {
+            if(GetMonsterAt(x, y) != null)
+            {
                 return true;
             }
             return false;
@@ -273,6 +276,19 @@ namespace Game.Logic.MapGeneration
             Cell cell = (Cell)GetCell(x, y);
             SetCellProperties(cell.X, cell.Y, cell.IsTransparent, cell.IsWalkable, IsExplored);
         }
+
+        public bool CanTeleport(int x, int y)
+        {
+            if(IsColumn(x, y) || IsMonster(x, y))
+            {
+                return false;
+            }
+            return true;
+        }
+
+
+
     }
 }
+
 
