@@ -66,7 +66,7 @@ namespace Game.Logic
                     int? y = null;
                     PlayerInventory.AddToQuickBar(new ScrollOfDestruction(x, y));
                 }
-                else if (keyPress.Key == RLKey.O) // shortcut to get more scrolls for testing
+                else if (keyPress.Key == RLKey.O)
                 {
                     int? x = null;
                     int? y = null;
@@ -74,11 +74,15 @@ namespace Game.Logic
                 }
                 else if (keyPress.Key == RLKey.Number1)
                 {
-                    return UseItem(Quickbar.ScrollTeleport);
+                    return UseItem(0);
                 }
                 else if (keyPress.Key == RLKey.Number2)
                 {
-                    return UseItem(Quickbar.ScrollDestruction);
+                    return UseItem(1);
+                }
+                else if(keyPress.Key == RLKey.Number3)
+                {
+                    return UseItem(2);
                 }
 
                 
@@ -87,7 +91,7 @@ namespace Game.Logic
         }
 
 
-        public bool UseItem(Quickbar key)
+        public bool UseItem(int key)
         {
             if (Player.Inventory.Actives.Count == 0)
             {
@@ -97,17 +101,17 @@ namespace Game.Logic
             {
                 switch (key)
                 {
-                    case Quickbar.ScrollTeleport:
+                    case 0:
                         {
                             Player.Inventory.Actives[0].Use();
                             return true;
                         }
-                    case Quickbar.ScrollDestruction:
+                    case 1:
                         {
                             Player.Inventory.Actives[1].Use();
                             return true;
                         }
-                    case Quickbar.HealthPotion:
+                    case 2:
                         {
                             Player.Inventory.Actives[2].Use();
                             return true;
@@ -119,12 +123,6 @@ namespace Game.Logic
                 Game.MessageLog.Add("No item to use");
                 return false;
             }
-
-            /*if(Game.DungeonMap.SetActorPostion(Game.Player, Game.Player.X, Game.Player.Y))
-            {
-                return true;
-            }*/
-
             return false;
         }
 
