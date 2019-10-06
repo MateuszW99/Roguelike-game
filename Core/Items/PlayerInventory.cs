@@ -18,9 +18,12 @@ namespace Game.Core.Items
 
         public void Draw(RLConsole console)
         {
+            console.Print(1, 0, "Quickbar", RLColor.Cyan);
             for(int i = 0; i < Player.Inventory.Actives.Count; i++)
             {
                 StringBuilder itemDescription = new StringBuilder();
+                itemDescription.Append((i+1).ToString());
+                itemDescription.Append(". ");
                 itemDescription.Append(Player.Inventory.Actives[i].Name);
                 itemDescription.Append(" x ");
                 itemDescription.Append(Player.Inventory.Actives[i].Quantity);
