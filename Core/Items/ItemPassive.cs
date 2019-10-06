@@ -40,15 +40,44 @@ namespace Game.Core.Items
             {
                 Game.Player.Attack += Stats;
             }
-            else if(this is Armor)
+            else if(this is Chestplate)
             {
                 Game.Player.Defense += Stats;
             }
+            else if(this is Boots)
+            {
+                Game.Player.Speed += Stats;
+            }
         }
 
-        //public override void DropItem(Monster monster)
-       // {
-
-        //}
+        public static void RandomDrop(Monster monster)
+        {
+            int randomPassive = (Game.Random.Next(1, 3));
+            switch (randomPassive)
+            {
+                case 1:
+                    {
+                        Sword sword = new Sword(monster.X, monster.Y);
+                        sword.DropItem(monster);
+                        return;
+                    }
+                case 2:
+                    {
+                        Chestplate chestplate = new Chestplate(monster.X, monster.Y);
+                        chestplate.DropItem(monster);
+                        return;
+                    }
+                case 3:
+                    {
+                        Boots boots = new Boots(monster.X, monster.Y);
+                        boots.DropItem(monster);
+                        return;
+                    }
+                default:
+                    {
+                        return;
+                    }
+            }
+        }
     }
 }

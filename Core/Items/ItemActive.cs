@@ -31,12 +31,51 @@ namespace Game.Core.Items
                 Game.MessageLog.Add($"You don't have any {this.Name} to use.");
                 return;
             }
-            this.GiveEffect();
-            this.Quantity--;
-        }
+            GiveEffect();
+            Quantity--;
+            if (this.Quantity <= 0)
+            {
+                Player.Inventory.Actives.Remove(this);
+            }
+            }
 
         public virtual void GiveEffect()
         { }
+
+        public static void RandomDrop(Monster monster)
+        {
+            int randomActive = Game.Random.Next(1, 5);
+            switch (randomActive)
+            {
+                case 1:
+                    {
+                        return;
+                    }
+                case 2:
+                    {
+                        ScrollOfTeleport scroll = new ScrollOfTeleport(monster.X, monster.Y);
+                        scroll.DropItem(monster);
+                        return;
+                    }
+                case 3:
+                    {
+                        ScrollOfDestruction scroll = new ScrollOfDestruction(monster.X, monster.Y);
+                        scroll.DropItem(monster);
+                        return;
+                    }
+                case 4:
+                case 5:
+                    {
+                        HealthPotion potion = new HealthPotion(monster.X, monster.Y);
+                        potion.DropItem(monster);
+                        return;
+                    }
+                default:
+                    {
+                        return;
+                    }
+            }
+        }
 
         // IEquatable
         public override string ToString()
@@ -46,10 +85,7 @@ namespace Game.Core.Items
 
         public override bool Equals(object obj)
         {
-            if (obj == null) return false;
-            ItemActive tempItem = obj as ItemActive;
-            if (tempItem == null) return false;
-            else return Equals(tempItem);
+            return obj == null ? false : !(obj is ItemActive tempItem) ? false : Equals(tempItem);
         }
 
         public override int GetHashCode()
@@ -59,8 +95,7 @@ namespace Game.Core.Items
 
         public bool Equals(ItemActive tempItem)
         {
-            if (tempItem == null) return false;
-            return this.Name.Equals(tempItem.Name);
+            return tempItem == null ? false : Name.Equals(tempItem.Name);
         }
     }
 }
