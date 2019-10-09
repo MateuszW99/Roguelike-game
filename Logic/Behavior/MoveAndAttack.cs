@@ -8,9 +8,7 @@ namespace Game.Logic.Behavior
     {
         public bool Act(Monster monster, CommandSystem commandSystem)
         {
-            DungeonMap dungeonMap = Game.DungeonMap;
-            Player player = Game.Player;
-            FieldOfView monsterFOV = new FieldOfView(dungeonMap);
+            FieldOfView monsterFOV = new FieldOfView(Game.DungeonMap);
 
             // When the monster hasn't been alerted, compute its FOV
             // Use its Awareness value for the distance in the FOV
@@ -19,48 +17,55 @@ namespace Game.Logic.Behavior
             if (!monster.TurnsAlerted.HasValue)
             {
                 monsterFOV.ComputeFov(monster.X, monster.Y, monster.Awareness, true);
-                if(monsterFOV.IsInFov(player.X, player.Y))
+                if(monsterFOV.IsInFov(Game.Player.X, Game.Player.Y))
                 {
-                    Game.MessageLog.Add($"{monster.Name} was alerted by {player.Name}!");
+                    Game.MessageLog.Add($"{monster.Name} was alerted by {Game.Player.Name}!");
                     monster.TurnsAlerted = 1;
                 }
             }
 
             if(monster.TurnsAlerted.HasValue)
             {
-                // Before finding a path, make sure to make the monster and player Cells walkable
-                dungeonMap.SetIsWalkable(monster.X, monster.Y, true);
-                dungeonMap.SetIsWalkable(player.X, player.Y, true);
+                // Before finding a path monster and player cells must be walkable
+                Game.DungeonMap.SetIsWalkable(monster.X, monster.Y, true);
+                Game.DungeonMap.SetIsWalkable(Game.Player.X, Game.Player.Y, true);
 
-                PathFinder pathFinder = new PathFinder(dungeonMap);
+                PathFinder pathFinder = new PathFinder(Game.DungeonMap);
                 Path path = null;
 
                 try
                 {
+                    Game.DungeonMap.SetIsWalkable(monster.X, monster.Y, false);
+                    Game.DungeonMap.SetIsWalkable(Game.Player.X, Game.Player.Y, false);
+                    if (monster.IsInRange())
+                    {
+                        commandSystem.Attack(monster, Game.Player);
+                        return true;
+                    }
+
+
                     path = pathFinder.ShortestPath(
-                        dungeonMap.GetCell(monster.X, monster.Y),
-                        dungeonMap.GetCell(player.X, player.Y));
+                        Game.DungeonMap.GetCell(monster.X, monster.Y),
+                        Game.DungeonMap.GetCell(Game.Player.X, Game.Player.Y));
+
                 }
                 catch(PathNotFoundException)
                 {
                     // Something made it impossible for the monster to reach the player
-                    // It could be the otherm onsters blocking the way
+                    // i.e. other monsters blocking the way
                     Game.MessageLog.Add($"{monster.Name} is wating for a turn.");
                 }
 
-                dungeonMap.SetIsWalkable(monster.X, monster.Y, false);
-                dungeonMap.SetIsWalkable(player.X, player.Y, false);
+
                 if(path != null)
                 {
                     try
                     {
-                        // TODO: This should be path.StepForward() but there is a bug in RogueSharp V3
-                        // The bug is that a Path returned from a PathFinder does not include the source Cell
                         commandSystem.MoveMonster(monster, (Cell)path.StepForward());
                     }
-                    catch(NoMoreStepsException)
+                    catch (NoMoreStepsException)
                     {
-                        Game.MessageLog.Add($"{monster.Name} growls at the {player.Name} in anger!");
+                        Game.MessageLog.Add($"{monster.Name} growls at the {Game.Player.Name} in anger!");
                     }
                 }
 

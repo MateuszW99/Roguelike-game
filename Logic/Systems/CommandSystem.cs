@@ -1,4 +1,5 @@
 ﻿using Game.Core;
+using Game.Core.Entities.Monsters;
 using Game.Core.Items;
 using Game.Interfaces;
 using Game.Logic.MapGeneration;
@@ -90,7 +91,6 @@ namespace Game.Logic
             return false;
         }
 
-
         public bool UseItem(int key)
         {
             if (Player.Inventory.Actives.Count == 0)
@@ -149,9 +149,13 @@ namespace Game.Logic
 
         public void MoveMonster(Monster monster, Cell cell)
         {
-            if(!Game.DungeonMap.SetActorPostion(monster, cell.X, cell.Y))
+            if (!Game.DungeonMap.SetActorPostion(monster, cell.X, cell.Y))
             {
-                if(Game.Player.X == cell.X && Game.Player.Y == cell.Y)
+                if (monster.IsInRange())
+                {
+                    Attack(monster, Game.Player);
+                }
+                else if (Game.Player.X == cell.X && Game.Player.Y == cell.Y)
                 {
                     Attack(monster, Game.Player);
                 }
@@ -229,7 +233,7 @@ namespace Game.Logic
         {
             int hits = 0;
 
-            attackMessage.AppendFormat("{0} attacks {1} and rolls: ", attacker.Name, defender.Name);
+            attackMessage.AppendFormat("{0} attacks {1} for ", attacker.Name, defender.Name);
 
             // Roll a number of 100-sided dice equall to the the Attack val of the attacking actor
             DiceExpression attackDice = new DiceExpression().Dice(attacker.Attack, 100);
@@ -238,7 +242,7 @@ namespace Game.Logic
             // Check the value of each singe rolled dice
             foreach(TermResult termResult in attackResult.Results)
             {
-                attackMessage.Append(termResult.Value + ", ");
+                //attackMessage.Append(termResult.Value + ", ");
 
                 if(termResult.Value >= 100 - attacker.AttackChance)
                 {
@@ -256,8 +260,8 @@ namespace Game.Logic
 
             if(hits > 0)
             {
-                attackMessage.AppendFormat("scoring {0} hits.", hits);
-                defenseMessage.AppendFormat(" {0} defends and rolls: ", defender.Name);
+                attackMessage.AppendFormat("{0} hits.", hits);
+                defenseMessage.AppendFormat(" {0} is defending ", defender.Name);
 
                 // Roll a number of 100-sided dice equal to the Defense value of the defendering actor
                 DiceExpression defenseDice = new DiceExpression().Dice(defender.Defense, 100);
@@ -266,7 +270,7 @@ namespace Game.Logic
                 // Check the value of each singe rolled dice
                 foreach(TermResult termResult in defenseRoll.Results)
                 {
-                    defenseMessage.Append(termResult.Value + ", ");
+                    //defenseMessage.Append(termResult.Value + ", ");
 
                     if(termResult.Value >= 100 - defender.DefenseChance)
                     {
