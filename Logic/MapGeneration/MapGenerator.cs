@@ -1,5 +1,4 @@
-﻿using Game.Core.Monsters;
-using RogueSharp;
+﻿using RogueSharp;
 using RogueSharp.DiceNotation;
 using System;
 using System.Collections.Generic;
@@ -7,16 +6,17 @@ using System.Linq;
 using Game.Core;
 using RLNET;
 using Game.Logic.MapGeneration.Objects;
+using Game.Core.Entities.Monsters;
 
 namespace Game.Logic.MapGeneration
 {
     class MapGenerator
     {
-        private readonly int _width;
-        private readonly int _height;
-        private readonly int _maxRooms;
-        private readonly int _roomMaxSize;
-        private readonly int _roomMinSize;
+        private readonly int width;
+        private readonly int height;
+        private readonly int maxRooms;
+        private readonly int roomMaxSize;
+        private readonly int roomMinSize;
 
         private readonly DungeonMap _map;
 
@@ -26,25 +26,25 @@ namespace Game.Logic.MapGeneration
 
         public MapGenerator(int width, int height, int maxRooms, int roomMaxSize, int roomMinSize, int mapLevel)
         {
-            _width = width;
-            _height = height;
-            _maxRooms = maxRooms;
-            _roomMaxSize = roomMaxSize;
-            _roomMinSize = roomMinSize;
+            this.width = width;
+            this.height = height;
+            this.maxRooms = maxRooms;
+            this.roomMaxSize = roomMaxSize;
+            this.roomMinSize = roomMinSize;
             _map = new DungeonMap();
         }
 
         public DungeonMap CreateMap(RLConsole mapConsole)
         {
-            _map.Initialize(_width, _height);
+            _map.Initialize(width, height);
 
             // Place as many rooms as possible
-            for (int i = 0; i < _maxRooms; i++)
+            for (int i = 0; i < maxRooms; i++)
             {
-                int roomWidth = Game.Random.Next(_roomMinSize, _roomMaxSize);
-                int roomHeight = Game.Random.Next(_roomMinSize, _roomMaxSize);
-                int roomXPosition = Game.Random.Next(0, _width - roomWidth - 1);
-                int roomYPosition = Game.Random.Next(0, _height - roomHeight - 1);
+                int roomWidth = Game.Random.Next(roomMinSize, roomMaxSize);
+                int roomHeight = Game.Random.Next(roomMinSize, roomMaxSize);
+                int roomXPosition = Game.Random.Next(0, width - roomWidth - 1);
+                int roomYPosition = Game.Random.Next(0, height - roomHeight - 1);
 
                 var newRoom = new Rectangle(roomXPosition, roomYPosition, roomWidth, roomHeight);
 
