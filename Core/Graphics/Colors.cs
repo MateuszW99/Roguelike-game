@@ -18,6 +18,7 @@ namespace Game.Core
 
         public static RLColor Player = Palette.DbLight;
         public static RLColor Kobold = Palette.DbBrightWood;
+        public static RLColor Ghost = Palette.DbGhost;
 
         public static RLColor DoorBackground = Palette.ComplimentDarkest;
         public static RLColor Door = Palette.ComplimentLighter;
@@ -27,7 +28,7 @@ namespace Game.Core
         public static RLColor Gold = Palette.DbGold;
         public static RLColor Sword = Palette.DbMetal;
         public static RLColor Scroll = Palette.DbScroll;
-        public static RLColor Potion = Palette.dbHpPotion;
+        public static RLColor Potion = Palette.DbHpPotion;
 
         public static RLColor Text = RLColor.White;
     }

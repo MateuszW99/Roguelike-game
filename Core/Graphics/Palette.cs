@@ -47,6 +47,7 @@ namespace Game.Core
         //public static RLColor DbLight = new RLColor(60, 135, 22);
         public static RLColor DbGold = new RLColor(255, 192, 0);
         public static RLColor DbScroll = new RLColor(193, 161, 56);
-        public static RLColor dbHpPotion = new RLColor(255, 58, 18);
+        public static RLColor DbHpPotion = new RLColor(255, 58, 18);
+        public static RLColor DbGhost = new RLColor(191, 223, 196);
     }
 }
