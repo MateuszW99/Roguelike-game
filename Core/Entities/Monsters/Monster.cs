@@ -1,4 +1,5 @@
-﻿using Game.Logic;
+﻿using Game.Core.Entities.Monsters;
+using Game.Logic;
 using Game.Logic.Behavior;
 using System;
 
@@ -34,6 +35,35 @@ namespace Game.Core
             }
             int distance = (int)Math.Sqrt(Math.Pow(X - Game.Player.X, 2) + Math.Pow(Y - Game.Player.Y, 2));
             return (distance <= Range) ? true : false;
+        }
+
+        private void SetMonsterLocation(RogueSharp.Point location)
+        {
+            X = location.X;
+            Y = location.Y;
+        }
+
+        public static Monster RandomSpawn(RogueSharp.Point spawnPoint)
+        {
+            switch(Game.Random.Next(1, 2))
+            {
+                case 1:
+                    {
+                        var monster = Kobold.Create(Game.mapLevel);
+                        monster.SetMonsterLocation(spawnPoint);
+                        return monster;
+                    }
+                case 2:
+                    {
+                        var monster = Ghost.Create(Game.mapLevel);
+                        monster.SetMonsterLocation(spawnPoint);
+                        return monster;
+                    }
+                default:
+                    {
+                        return null;
+                    }
+            }
         }
     }
 }

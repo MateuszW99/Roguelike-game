@@ -18,7 +18,7 @@ namespace Game.Logic.MapGeneration
         private readonly int roomMaxSize;
         private readonly int roomMinSize;
 
-        private readonly DungeonMap _map;
+        private readonly DungeonMap map;
 
         public static Player Player { get; set; }
 
@@ -31,12 +31,12 @@ namespace Game.Logic.MapGeneration
             this.maxRooms = maxRooms;
             this.roomMaxSize = roomMaxSize;
             this.roomMinSize = roomMinSize;
-            _map = new DungeonMap();
+            map = new DungeonMap();
         }
 
         public DungeonMap CreateMap(RLConsole mapConsole)
         {
-            _map.Initialize(width, height);
+            map.Initialize(width, height);
 
             // Place as many rooms as possible
             for (int i = 0; i < maxRooms; i++)
@@ -100,7 +100,7 @@ namespace Game.Logic.MapGeneration
             PlacePlayer();
             PlaceMonsters();
 
-            return _map;
+            return map;
         }
 
         private void CreateRoom(Rectangle room)
@@ -110,7 +110,7 @@ namespace Game.Logic.MapGeneration
                 for (int y = room.Top + 1; y < room.Bottom; y++)
                 {
                     // The last flag is set to false in order not to show unexplored rooms
-                    _map.SetCellProperties(x, y, true, true, false);
+                    map.SetCellProperties(x, y, true, true, false);
                 }
             }
         }
@@ -122,11 +122,11 @@ namespace Game.Logic.MapGeneration
             {
                 player = new Player(DungeonMap.Rooms[0].Center);
             }
-            if(!_map.GetCell(player.X, player.Y).IsWalkable)
+            if(!map.GetCell(player.X, player.Y).IsWalkable)
             {
-                _map.SetActorPostion(player, DungeonMap.Rooms[0].Center.X, DungeonMap.Rooms[0].Center.Y);
+                map.SetActorPostion(player, DungeonMap.Rooms[0].Center.X, DungeonMap.Rooms[0].Center.Y);
             }
-            _map.AddPlayer(player);
+            map.AddPlayer(player);
         }
 
         private void PlaceMonsters()
@@ -142,7 +142,7 @@ namespace Game.Logic.MapGeneration
                     for (int j = 0; j < numberOfMonsters; j++)
                     {
                         // Find space to place a monster
-                        Point randomLocation = (Point)_map.GetRandomWalkableLocation(DungeonMap.Rooms[i]);
+                        Point randomLocation = (Point)map.GetRandomWalkableLocation(DungeonMap.Rooms[i]);
                         if(randomLocation == DungeonMap.Rooms[i].Center)
                         {
                             return;
@@ -150,10 +150,9 @@ namespace Game.Logic.MapGeneration
                         if (randomLocation != null)
                         {
                             // Hard coded monster to be created at level 1
-                            var monster = Kobold.Create(1);
-                            monster.X = randomLocation.X;
-                            monster.Y = randomLocation.Y;
-                            _map.AddMonster(monster);
+                            
+                            var monster = Monster.RandomSpawn(randomLocation);            
+                            map.AddMonster(monster);
                         }
                     }
                 }
@@ -165,7 +164,7 @@ namespace Game.Logic.MapGeneration
         {
             for (int x = Math.Min(xStart, xEnd); x <= Math.Max(xStart, xEnd); x++)
             {
-                _map.SetCellProperties(x, yPosition, true, true);
+                map.SetCellProperties(x, yPosition, true, true);
             }
         }
 
@@ -174,7 +173,7 @@ namespace Game.Logic.MapGeneration
         {
             for (int y = Math.Min(yStart, yEnd); y <= Math.Max(yStart, yEnd); y++)
             {
-                _map.SetCellProperties(xPosition, y, true, true);
+                map.SetCellProperties(xPosition, y, true, true);
             }
         }
 
@@ -185,11 +184,11 @@ namespace Game.Logic.MapGeneration
             {
                 int xPosition = Game.Random.Next(room.Left + 2, room.Right - 2);
                 int yPosition = Game.Random.Next(room.Top + 2, room.Bottom - 2);
-                if (_map.IsWalkable(xPosition, yPosition) && !(room.Center.X == xPosition && room.Center.Y == yPosition))
+                if (map.IsWalkable(xPosition, yPosition) && !(room.Center.X == xPosition && room.Center.Y == yPosition))
                 {
-                    _map.SetCellProperties(xPosition, yPosition, false, false, false);
+                    map.SetCellProperties(xPosition, yPosition, false, false, false);
                     DungeonMap.Columns.Add(new Column(xPosition, yPosition));
-                    _map.SetIsWalkable(xPosition, yPosition, false);
+                    map.SetIsWalkable(xPosition, yPosition, false);
                 }
                 else
                 {
@@ -209,8 +208,8 @@ namespace Game.Logic.MapGeneration
                 if (IsPotentialDoor(cell))
                 {
                     // A door must block FOV when it's closed
-                    _map.SetCellProperties(cell.X, cell.Y, false, true);
-                    _map.Doors.Add(new Logic.MapGeneration.Door
+                    map.SetCellProperties(cell.X, cell.Y, false, true);
+                    map.Doors.Add(new Logic.MapGeneration.Door
                     {
                         X = cell.X,
                         Y = cell.Y,
@@ -233,17 +232,17 @@ namespace Game.Logic.MapGeneration
             }
             try
             {
-                Cell right = (Cell)_map.GetCell(cell.X + 1, cell.Y);
-                Cell left = (Cell)_map.GetCell(cell.X - 1, cell.Y);
-                Cell top = (Cell)_map.GetCell(cell.X, cell.Y - 1);
-                Cell bottom = (Cell)_map.GetCell(cell.X, cell.Y + 1);
+                Cell right = (Cell)map.GetCell(cell.X + 1, cell.Y);
+                Cell left = (Cell)map.GetCell(cell.X - 1, cell.Y);
+                Cell top = (Cell)map.GetCell(cell.X, cell.Y - 1);
+                Cell bottom = (Cell)map.GetCell(cell.X, cell.Y + 1);
                 
                 // Make sure that none of the references is already a door
-                if (_map.GetDoor(cell.X, cell.Y) != null ||
-                    _map.GetDoor(cell.X + 1, cell.Y) != null ||
-                    _map.GetDoor(cell.X - 1, cell.Y) != null ||
-                    _map.GetDoor(cell.X, cell.Y - 1) != null ||
-                    _map.GetDoor(cell.X, cell.Y + 1) != null)
+                if (map.GetDoor(cell.X, cell.Y) != null ||
+                    map.GetDoor(cell.X + 1, cell.Y) != null ||
+                    map.GetDoor(cell.X - 1, cell.Y) != null ||
+                    map.GetDoor(cell.X, cell.Y - 1) != null ||
+                    map.GetDoor(cell.X, cell.Y + 1) != null)
                 {
                     return false;
                 }
@@ -290,13 +289,13 @@ namespace Game.Logic.MapGeneration
 
         private void CreateStairs()
         {
-            _map.StairsUp = new Stairs
+            map.StairsUp = new Stairs
             {
                 X = DungeonMap.Rooms.First().Center.X + 1,
                 Y = DungeonMap.Rooms.First().Center.Y + 1,
                 IsUp = true
             };
-            _map.StairsDown = new Stairs
+            map.StairsDown = new Stairs
             {
                 X = DungeonMap.Rooms.Last().Center.X,
                 Y = DungeonMap.Rooms.Last().Center.Y,
