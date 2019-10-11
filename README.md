@@ -6,10 +6,11 @@ Things I implemented are:
 - columns which are randomly generated obstacles for player;
 - two categories for items: passive items, increasing stats of the player, and
   active items with quickbar at the top of the screen;
-- fixed a bug where getting on a new floor would place player in an unwalkable space.
+- fixed a bug where getting on a new floor would place player in an unwalkable space;
+- a new type of monster - ghost which attacks from a distance.
 
 Things I'm planning to add:
-- more monsters with different types of attack(ranged) and bosses after every 5th floor;
-- more items with different chances to drop;
+- more monsters and bosses;
+- more items;
 - visual effects when using an item;
 - game ends when the player dies.
