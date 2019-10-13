@@ -1,5 +1,4 @@
 ﻿using Game.Core;
-using Game.Core.Entities.Monsters;
 using Game.Core.Items;
 using Game.Interfaces;
 using Game.Logic.MapGeneration;
@@ -57,7 +56,7 @@ namespace Game.Logic
                         Game.MessageLog = new MessageLog();
                         Game.CommandSystem = new CommandSystem();
                         Game.rootConsole.Title = $"Game - Level {Game.mapLevel}";
-                        Game.MessageLog.Add($"You reached {Game.mapLevel} level!");
+                        Game.MessageLog.Add($"You reached {Game.mapLevel} level!", RLColor.White);
                         return true;
                     }
                 }
@@ -120,7 +119,7 @@ namespace Game.Logic
             }
             catch (ArgumentOutOfRangeException)
             {
-                Game.MessageLog.Add("No item to use");
+                Game.MessageLog.Add("No item to use", RLColor.White);
                 return false;
             }
             return false;
@@ -217,10 +216,18 @@ namespace Game.Logic
 
             int blocks = ResolveDefense(defender, hits, attackMessage, defenseMessage);
 
-            Game.MessageLog.Add(attackMessage.ToString());
+            if(attacker is Player)
+            {
+                Game.MessageLog.Add(attackMessage.ToString(), Palette.DbGrass);
+            }
+            else
+            {
+                Game.MessageLog.Add(attackMessage.ToString(), RLColor.Red);
+            }
+            
             if(!string.IsNullOrWhiteSpace(defenseMessage.ToString()))
             {
-                Game.MessageLog.Add(defenseMessage.ToString());
+                Game.MessageLog.Add(defenseMessage.ToString(), RLColor.White);
             }
 
             int damage = hits - blocks;
@@ -295,7 +302,14 @@ namespace Game.Logic
             {
                 defender.Health -= damage;
 
-                Game.MessageLog.Add($"  {defender.Name} was hit for {damage} damage.");
+                if(defender is Player)
+                {
+                    Game.MessageLog.Add($"  {defender.Name} was hit for {damage} damage.", RLColor.Red);
+                }
+                else
+                {
+                    Game.MessageLog.Add($"  {defender.Name} was hit for {damage} damage.", Palette.DbGrass);
+                }
                 if(defender.Health <= 0)
                 {
                     ResolveDeath(defender);
@@ -303,7 +317,14 @@ namespace Game.Logic
             }
             else
             {
-                Game.MessageLog.Add($"  {defender.Name} blocked all damage.");
+                if (defender is Player)
+                {
+                    Game.MessageLog.Add($"  {defender.Name} was hit for {damage} damage.", Palette.DbGrass);
+                }
+                else
+                {
+                    Game.MessageLog.Add($"  {defender.Name} blocked all damage.", RLColor.Red);
+                }
             }
         }
 
@@ -311,7 +332,7 @@ namespace Game.Logic
         {
             if(actor is Player)
             {
-                Game.MessageLog.Add("You just died. Game over!");
+                Game.MessageLog.Add("You just died. Game over!", RLColor.White);
             }
             else if(actor is Monster)
             {
