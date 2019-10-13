@@ -72,14 +72,15 @@ namespace Game
 
             // Create a new MessageLog and print the random seed used to generate the level
             MessageLog = new MessageLog();
-            MessageLog.Add("The rogue arrives on level 1");
-            MessageLog.Add($"Level created with seed '{seed}'");
+            MessageLog.Add("The rogue arrives on level 1", RLColor.White);
+            MessageLog.Add($"Level created with seed '{seed}'", RLColor.White);
 
             // PlayerInventory keeps player's equipment and prints its content onto the QuickBar
             //PlayerInventory = new PlayerInventory();
 
             PlaceConsoles();
-
+            //rootConsole.CursorVisible = true;
+            
             rootConsole.Render += OnRootConsoleUpdate;
             rootConsole.Render += OnRootConsoleRender;
 

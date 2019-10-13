@@ -1,9 +1,5 @@
-﻿using Game.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using RLNET;
 
 namespace Game.Core.Items
 {
@@ -28,7 +24,7 @@ namespace Game.Core.Items
         {
             if (this.Quantity <= 0)
             {
-                Game.MessageLog.Add($"You don't have any {this.Name} to use.");
+                Game.MessageLog.Add($"You don't have any {this.Name} to use.", RLColor.White);
                 return;
             }
             GiveEffect();

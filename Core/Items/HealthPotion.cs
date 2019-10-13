@@ -22,11 +22,11 @@ namespace Game.Core.Items
             if (Game.Player.Health > 100)
             {
                 Game.Player.Health = 100;
-                Game.MessageLog.Add("Life fully regenered!");
+                Game.MessageLog.Add("Life fully regenered!", Palette.DbGrass);
             }
             else
             {
-                Game.MessageLog.Add($"Healed {regen} life!");
+                Game.MessageLog.Add($"Healed {regen} life!", Palette.DbGrass);
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using Game.Interfaces;
 using Game.Logic.MapGeneration;
 using System.Linq;
+using RLNET;
 
 namespace Game.Core.Items
 {
@@ -26,11 +27,11 @@ namespace Game.Core.Items
             if (!Player.Inventory.Passives.Contains(this))
             {
                 Player.Inventory.Passives.Add(this);
-                Game.MessageLog.Add($"You found the {this.Name}!");
+                Game.MessageLog.Add($"You found the {this.Name}!", Colors.Gold);
             }
             else
             {
-                Game.MessageLog.Add($"You can't carry more than 1 {this.Name}.");
+                Game.MessageLog.Add($"You can't carry more than 1 {this.Name}.", RLColor.White);
             }
         }
 

@@ -1,6 +1,6 @@
 ﻿using Game.Core;
-using Game.Logic.MapGeneration;
 using RogueSharp;
+using RLNET;
 
 namespace Game.Logic.Behavior
 {
@@ -19,7 +19,7 @@ namespace Game.Logic.Behavior
                 monsterFOV.ComputeFov(monster.X, monster.Y, monster.Awareness, true);
                 if(monsterFOV.IsInFov(Game.Player.X, Game.Player.Y))
                 {
-                    Game.MessageLog.Add($"{monster.Name} was alerted by {Game.Player.Name}!");
+                    Game.MessageLog.Add($"{monster.Name} was alerted by {Game.Player.Name}!", RLColor.White);
                     monster.TurnsAlerted = 1;
                 }
             }
@@ -53,7 +53,7 @@ namespace Game.Logic.Behavior
                 {
                     // Something made it impossible for the monster to reach the player
                     // i.e. other monsters blocking the way
-                    Game.MessageLog.Add($"{monster.Name} is wating for a turn.");
+                    Game.MessageLog.Add($"{monster.Name} is wating for a turn.", RLColor.White);
                 }
 
 
@@ -65,7 +65,7 @@ namespace Game.Logic.Behavior
                     }
                     catch (NoMoreStepsException)
                     {
-                        Game.MessageLog.Add($"{monster.Name} growls at the {Game.Player.Name} in anger!");
+                        Game.MessageLog.Add($"{monster.Name} growls at the {Game.Player.Name} in anger!", RLColor.White);
                     }
                 }
 

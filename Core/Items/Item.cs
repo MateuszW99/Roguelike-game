@@ -74,7 +74,7 @@ namespace Game.Core.Items
         public virtual void DropItem(Monster monster)
         {
             DungeonMap.Items.Add(this);
-            Game.MessageLog.Add($"  {monster.Name} died and dropped {this.Name}.");
+            Game.MessageLog.Add($"  {monster.Name} died and dropped {this.Name}.", this.Color);
         }
 
         public static void SearchForItems()
@@ -91,7 +91,7 @@ namespace Game.Core.Items
                     {
                         PlayerInventory.AddToQuickBar((ItemActive)DungeonMap.Items[i]);
                     }
-                    Game.MessageLog.Add($"You picked the {DungeonMap.Items[i].Name}.");
+                    Game.MessageLog.Add($"You picked the {DungeonMap.Items[i].Name}.", RLColor.White);
                     DungeonMap.Items.RemoveAt(i);
                 }
             }

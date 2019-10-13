@@ -52,7 +52,7 @@ namespace Game.Core
         {
             Cell monsterLocation = new Cell(monster.X, monster.Y, true, true, true);
             DungeonMap.GoldPiles.Add(new GoldPile(monsterLocation.X, monsterLocation.Y, monster.Gold));
-            Game.MessageLog.Add($"  {monster.Name} died and dropped {monster.Gold} Gold.");
+            Game.MessageLog.Add($"  {monster.Name} died and dropped {monster.Gold} Gold.", Colors.Gold);
         }
 
         public static void SearchForGold()
@@ -62,7 +62,7 @@ namespace Game.Core
                 if (Game.Player.X == DungeonMap.GoldPiles[i].X && Game.Player.Y == DungeonMap.GoldPiles[i].Y)
                 {
                     GoldPile.AddGoldToPlayer(DungeonMap.GoldPiles[i].Gold);
-                    Game.MessageLog.Add($"{Game.Player.Name} acquired {DungeonMap.GoldPiles[i].Gold} Gold.");
+                    Game.MessageLog.Add($"{Game.Player.Name} acquired {DungeonMap.GoldPiles[i].Gold} Gold.", Colors.Gold);
                     DungeonMap.GoldPiles.Remove(DungeonMap.GoldPiles[i]);
                     // Do not use break here due to one cell possibly having more than one pile of gold
                 }

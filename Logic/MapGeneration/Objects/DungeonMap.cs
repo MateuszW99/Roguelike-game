@@ -242,7 +242,7 @@ namespace Game.Logic.MapGeneration
                 var cell = GetCell(x, y);
                 // Door won't block FOV when opened
                 SetCellProperties(x, y, true, cell.IsWalkable, cell.IsExplored);
-                Game.MessageLog.Add($"{actor.Name} opened a door");
+                Game.MessageLog.Add($"{actor.Name} opened a door", Colors.Door);
             }
         }
 
